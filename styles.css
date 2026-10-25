@@ -50,3 +50,45 @@
   .race-stats div{padding:1.25rem}
   .goal-large>div:first-child{display:block}
 }
+
+
+/* V5 — minimalist, story-first, natural photo crops */
+.v5-hero{align-items:stretch}
+.v5-hero-photo{background:#111;display:flex;flex-direction:column;justify-content:center}
+.v5-hero-photo img{width:100%;height:auto;max-height:none;object-fit:contain;display:block}
+.mama-v5{background:#0b0b0b;color:#f4f0e6;display:grid;grid-template-columns:.8fr 1.2fr;gap:4vw;align-items:start}
+.mama-v5 h2{font-size:clamp(5rem,13vw,11rem);line-height:.78;margin:.2em 0 .35em;letter-spacing:-.06em}
+.mama-v5-intro{position:sticky;top:110px}
+.mama-v5-photo{margin:0}
+.mama-v5-photo img{width:100%;height:auto;display:block;object-fit:contain}
+.mama-v5-photo figcaption,.natural-photo figcaption{font-size:.68rem;letter-spacing:.18em;margin-top:.7rem}
+.suzanna-quote{grid-column:1/-1;margin-top:3rem;border-top:1px solid rgba(255,255,255,.25);padding:clamp(2rem,6vw,6rem) 0;max-width:1100px}
+.suzanna-quote .quote-mark{font-family:Georgia,serif;font-size:9rem;line-height:.5;color:#9be000}
+.suzanna-quote blockquote{font-size:clamp(2.5rem,6vw,6rem);line-height:.92;margin:.35em 0 .6em;max-width:12em;border:0;padding:0}
+.suzanna-quote p{font-size:clamp(1.05rem,1.8vw,1.35rem);line-height:1.6;max-width:48rem}
+.suzanna-quote .quote-fire{font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.6rem);line-height:1.2;color:#f4f0e6}
+.suzanna-quote cite{display:block;margin-top:2rem;font-style:normal;font-weight:800;letter-spacing:.12em;color:#9be000}
+.cause-band{background:#5a2d7a;color:white;padding:clamp(2rem,5vw,5rem);display:grid;grid-template-columns:1fr 1fr auto;gap:2rem;align-items:end;border-bottom:10px solid #9be000}
+.cause-band span{display:block;font-size:.7rem;letter-spacing:.18em}.cause-band strong{font-size:clamp(4rem,10vw,9rem);line-height:.8}
+.cause-band a{color:white;font-weight:900;font-size:1.1rem}.cause-band p{font-family:Georgia,serif;font-size:1.25rem}
+.mission-card{min-height:460px}
+.race-section{position:relative;overflow:hidden}
+.race-section:after{content:"100";position:absolute;right:-.04em;bottom:-.18em;font-size:clamp(16rem,42vw,40rem);font-weight:900;line-height:.7;color:rgba(255,255,255,.035);pointer-events:none}
+.race-hero{position:relative;z-index:1}
+.race-kicker{max-width:12em}
+.journal-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:4vw;align-items:center}
+.natural-photo{margin:0}.natural-photo img{width:100%;height:auto;display:block;object-fit:contain}
+.journal-copy h3{font-family:Georgia,serif;font-size:clamp(2.7rem,6vw,6rem);line-height:.95;margin:.25em 0}
+.photo-strip-v5{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:4rem;align-items:start}
+.photo-strip-v5 figure{margin:0;background:#111}
+.photo-strip-v5 img{width:100%;height:auto;display:block;object-fit:contain}
+.media-credit{font-size:.68rem;letter-spacing:.18em;margin-top:.8rem;font-weight:800}
+@media(max-width:800px){
+ .mama-v5,.journal-grid{grid-template-columns:1fr}
+ .mama-v5-intro{position:static}
+ .mama-v5-photo{order:2}.suzanna-quote{order:3}
+ .cause-band{grid-template-columns:1fr}
+ .photo-strip-v5{grid-template-columns:1fr;gap:1.5rem}
+ .v5-hero-photo img,.mama-v5-photo img,.natural-photo img,.photo-strip-v5 img{height:auto!important;object-fit:contain!important;object-position:center!important}
+ .journal-copy{padding-top:1.5rem}
+}
