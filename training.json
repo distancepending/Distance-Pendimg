@@ -1,0 +1,51 @@
+{
+  "week": 3,
+  "dates": "Oct 26–Nov 1, 2026",
+  "weekly_miles": 44,
+  "longest_run": 12,
+  "next_step": "Week 3 — Oct 26 to Nov 1: 44 planned miles",
+  "schedule": [
+    {
+      "day": "Mon",
+      "run": "Off",
+      "strength": "Push",
+      "status": "Done"
+    },
+    {
+      "day": "Tue",
+      "run": "7 mi · 6 × 2 min / 2 min easy",
+      "strength": "Pull",
+      "status": "Planned"
+    },
+    {
+      "day": "Wed",
+      "run": "7 mi easy",
+      "strength": "Legs",
+      "status": "Planned"
+    },
+    {
+      "day": "Thu",
+      "run": "8 mi easy",
+      "strength": "Push",
+      "status": "Planned"
+    },
+    {
+      "day": "Fri",
+      "run": "5 mi recovery",
+      "strength": "Pull",
+      "status": "Planned"
+    },
+    {
+      "day": "Sat",
+      "run": "12 mi easy",
+      "strength": "—",
+      "status": "Planned"
+    },
+    {
+      "day": "Sun",
+      "run": "5 mi easy",
+      "strength": "Legs",
+      "status": "Planned"
+    }
+  ]
+}

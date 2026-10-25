@@ -1,0 +1,12 @@
+DISTANCE PENDING V8 — PAGES CMS
+
+Upload/replace these files and folders in the GitHub repository root.
+
+Important:
+- .pages.yml is the Pages CMS configuration.
+- content/journal.json powers Journal.
+- content/training.json powers Road to 100.
+- content/fundraising.json powers fundraising totals/URL.
+- The old Decap /admin folder is intentionally removed from this package. Delete /admin from GitHub if it still exists.
+
+After Pages CMS saves a change, GitHub receives the commit, Cloudflare deploys it, and the public site reads the updated JSON files automatically.

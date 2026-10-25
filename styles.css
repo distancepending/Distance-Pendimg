@@ -142,3 +142,12 @@
 .journal-v6{border-top:14px solid var(--tnt-green)}
 .road-v6{border-top:14px solid var(--tnt-purple)}
 @media(max-width:800px){.hero h1{font-size:clamp(3.7rem,17vw,6.5rem)}.mission-org-strip{grid-template-columns:1fr}.mission-org{min-height:210px;padding:2rem}.mission-org img{height:90px;max-width:260px}}
+
+/* V8 Pages CMS live-content layer */
+.cms-loading{font-size:1rem;opacity:.65;padding:1rem 0 2rem}
+.cms-journal-entry{margin-bottom:2rem}
+.cms-journal-entry small{display:block;margin-top:.4rem;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.6}
+.journal-description{font-size:1.15rem;font-weight:750;max-width:60rem;margin:1.25rem 0 .6rem}
+.journal-body{max-width:60rem;line-height:1.7}
+.journal-body p{margin:.5rem 0}
+.journal-cover{display:block;width:100%;max-height:620px;object-fit:cover;margin-bottom:1.5rem;border-radius:2px}
