@@ -1,5 +1,17 @@
 {
   "name": "distance-pending",
   "compatibility_date": "2026-10-25",
-  "assets": { "directory": "." }
+  "assets": {
+    "directory": "."
+  },
+  "routes": [
+    {
+      "pattern": "distancepending.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.distancepending.com",
+      "custom_domain": true
+    }
+  ]
 }

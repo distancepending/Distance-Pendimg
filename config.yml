@@ -1,0 +1,50 @@
+# Distance Pending CMS
+# One setup value is still required before login works:
+# replace PASTE_TURBO_SITE_ID_HERE after connecting the GitHub repo in Decap Turbo.
+
+backend:
+  name: turbo-github
+  turbo_site_id: PASTE_TURBO_SITE_ID_HERE
+  branch: main
+
+media_folder: "uploads"
+public_folder: "/uploads"
+
+site_url: "https://distancepending.com"
+display_url: "https://distancepending.com"
+logo_url: "/logo-dark.png"
+
+collections:
+  - name: "journal"
+    label: "Journal"
+    label_singular: "Journal Entry"
+    folder: "journal"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{date}} — {{title}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", date_format: "MMM D, YYYY", time_format: false }
+      - { label: "Cover Photo", name: "cover", widget: "image", required: false }
+      - { label: "Short Description", name: "description", widget: "text", required: false }
+      - { label: "Miles", name: "miles", widget: "number", value_type: "float", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "site"
+    label: "Site Updates"
+    files:
+      - name: "training"
+        label: "Road to 100 Stats"
+        file: "content/training.yml"
+        fields:
+          - { label: "Miles This Week", name: "weekly_miles", widget: "number", value_type: "float", required: false }
+          - { label: "Longest Run", name: "longest_run", widget: "number", value_type: "float", required: false }
+          - { label: "Next Step", name: "next_step", widget: "string", required: false }
+      - name: "fundraising"
+        label: "Fundraising"
+        file: "content/fundraising.yml"
+        fields:
+          - { label: "Amount Raised", name: "amount_raised", widget: "number", value_type: "float", required: false }
+          - { label: "Goal", name: "goal", widget: "number", value_type: "float", default: 50000 }
+          - { label: "Fundraiser URL", name: "fundraiser_url", widget: "string" }

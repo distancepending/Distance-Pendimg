@@ -100,3 +100,28 @@
   letter-spacing:.24em;
   color:#9be000;
 }
+
+/* V6.1 — real training journal */
+.training-week{border-top:8px solid #111;margin:2rem 0 4rem;background:rgba(255,255,255,.28)}
+.journal-week{border-top-color:#5a2d7a}
+.week-top{display:flex;justify-content:space-between;gap:2rem;align-items:end;padding:1.5rem 0}
+.week-top span{font-size:.68rem;font-weight:900;letter-spacing:.18em}
+.week-top h3{font-family:Georgia,serif;font-size:clamp(2rem,5vw,4.5rem);margin:.15em 0 0}
+.week-mileage{font-size:clamp(1.2rem,3vw,2.4rem);white-space:nowrap}
+.schedule-grid{border-top:1px solid #111}
+.schedule-row{display:grid;grid-template-columns:70px 1fr 100px 80px;gap:1rem;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,.25);align-items:center}
+.schedule-row span,.schedule-row em,.schedule-row b{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+.schedule-row em{font-style:normal}.schedule-row b{text-align:right}
+.week-note{font-family:Georgia,serif;font-size:1.2rem;line-height:1.5;max-width:48rem;margin:1.5rem 0}
+.training-snapshot{display:grid;grid-template-columns:repeat(4,1fr);border:2px solid #111;margin:2rem 0 4rem}
+.training-snapshot div{padding:1.5rem;border-right:1px solid #111}
+.training-snapshot div:last-child{border-right:0}
+.training-snapshot strong{display:block;font-size:clamp(2.5rem,6vw,6rem);line-height:.9}
+.training-snapshot span{display:block;margin-top:.7rem;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.plan-caption{font-family:Georgia,serif;font-size:1.25rem;max-width:44rem}
+@media(max-width:800px){
+ .week-top{display:block}.week-mileage{display:block;margin-top:1rem}
+ .schedule-row{grid-template-columns:48px 1fr 58px}.schedule-row b{display:none}
+ .training-snapshot{grid-template-columns:1fr 1fr}
+ .training-snapshot div{border-bottom:1px solid #111}
+}

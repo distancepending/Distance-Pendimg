@@ -1,0 +1,29 @@
+DISTANCE PENDING V6
+
+Adds:
+- distancepending.com + www.distancepending.com custom-domain routes
+- /admin/ Decap CMS interface
+- Journal editor with photo upload
+- Road to 100 stats editor
+- Fundraising amount/goal/URL editor
+
+ONE REQUIRED AUTH STEP:
+The admin interface needs a secure GitHub authentication backend.
+This package is configured for Decap Turbo (turbo-github).
+
+1. Create/connect a Decap Turbo site to GitHub repo distancepending/Distance-Pending, branch main.
+2. Set its Admin interface URL to:
+   https://distancepending.com/admin/
+   You can also temporarily add:
+   https://distance-pending.zhk58s9s8v.workers.dev/admin/
+3. Copy the Turbo Site ID.
+4. In admin/config.yml replace:
+   PASTE_TURBO_SITE_ID_HERE
+   with that Site ID.
+5. Commit. Then /admin/ can log in and write directly to GitHub.
+
+IMPORTANT:
+The CMS can create journal content and edit YAML data immediately after auth,
+but the current static homepage still needs a rendering layer before newly-created
+journal Markdown/YAML automatically appears on the public homepage. That is the
+next implementation step.
