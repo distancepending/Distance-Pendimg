@@ -1,0 +1,3 @@
+Distance Pending V9 — Mission + Journey refinement
+Upload all files in this folder to the root of the GitHub repository and commit to main.
+Pages CMS configuration and live JSON content layer are retained.

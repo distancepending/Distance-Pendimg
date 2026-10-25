@@ -151,3 +151,83 @@
 .journal-body{max-width:60rem;line-height:1.7}
 .journal-body p{margin:.5rem 0}
 .journal-cover{display:block;width:100%;max-height:620px;object-fit:cover;margin-bottom:1.5rem;border-radius:2px}
+
+
+/* V9 — mission clarity, journey hierarchy, restrained organization color */
+:root{
+  --dp-cream:#f2efe7;
+  --dp-ink:#11110f;
+  --tnt-purple:#563174;
+  --tnt-green:#8bd500;
+  --bcu-red:#df001b;
+}
+.v9-hero .hero-kicker{color:var(--dp-ink);border-left:5px solid var(--tnt-purple);padding-left:12px}
+.v9-hero h1{font-size:clamp(4rem,11.4vw,9.6rem)}
+.primary-donate{background:var(--tnt-purple);color:#fff;border-color:var(--tnt-purple);box-shadow:inset 0 -5px 0 var(--tnt-green)}
+.text-action{display:inline-flex;align-items:center;padding:16px 4px;font-size:11px;font-weight:900;letter-spacing:.14em;text-decoration:none;border-bottom:1px solid var(--dp-ink)}
+.mission-line{display:flex;align-items:center;justify-content:center;gap:1.25rem;padding:18px 5vw;background:var(--dp-ink);color:var(--dp-cream);font-size:.68rem;font-weight:900;letter-spacing:.16em;white-space:nowrap;overflow:auto}
+.mission-line a{text-decoration:none}.mission-line a:hover{text-decoration:underline}
+.mission-line i{width:6px;height:6px;border-radius:50%;background:var(--tnt-green);flex:0 0 auto}
+.mission-line i:nth-of-type(2){background:var(--bcu-red)}
+.v9-mama{border-top:0}
+.story-donate{margin-top:2.25rem;background:var(--tnt-purple);color:#fff;border-color:var(--tnt-green)}
+
+.v9-mission{padding:0;display:grid;grid-template-columns:.82fr 1.18fr;background:var(--dp-cream);border-bottom:0}
+.mission-goal{padding:clamp(3rem,6vw,7rem) 5vw;background:var(--tnt-purple);color:#fff;display:flex;flex-direction:column;justify-content:center}
+.mission-goal .eyebrow{color:var(--tnt-green)}
+.mission-goal h2{font-size:clamp(4.5rem,9vw,9rem);line-height:.79}
+.mission-goal h2 span{color:var(--tnt-green)}
+.mission-goal p{font-family:Georgia,serif;font-size:clamp(1.1rem,1.7vw,1.4rem);line-height:1.55;max-width:32rem;margin:2rem 0}
+.mission-goal p strong{display:block;font-family:Arial,Helvetica,sans-serif;font-size:1rem;letter-spacing:.08em;margin-bottom:.5rem}
+.light-donate{background:#fff;color:var(--dp-ink);border-color:#fff;align-self:flex-start;box-shadow:inset 0 -5px 0 var(--tnt-green)}
+.org-grid{display:grid;grid-template-rows:1fr 1fr}
+.org-card{display:grid;grid-template-columns:minmax(120px,.38fr) 1fr;gap:clamp(1.5rem,4vw,4rem);padding:clamp(2rem,5vw,5rem);text-decoration:none;border-bottom:1px solid var(--line);transition:background .18s ease}
+.org-card:hover{background:#fff}
+.org-tnt{border-top:10px solid var(--tnt-green)}
+.org-bcu{border-top:10px solid var(--bcu-red)}
+.org-logo-wrap{display:flex;align-items:flex-start;justify-content:flex-start}
+.org-logo-wrap img{width:100%;max-width:230px;height:110px;object-fit:contain;object-position:left top}
+.org-card h3{font-size:clamp(2rem,4vw,4.25rem);line-height:.9;letter-spacing:-.045em;margin:.3rem 0 1rem}
+.org-card p{font-family:Georgia,serif;font-size:1.05rem;line-height:1.55;max-width:38rem;margin:0 0 1.5rem}
+.org-card strong,.org-label{font-size:.67rem;letter-spacing:.16em;font-weight:900}
+.org-tnt strong{color:var(--tnt-purple)}.org-bcu strong{color:var(--bcu-red)}
+
+.v9-race{border-top:0}
+.race-why{font-family:Georgia,serif;font-size:clamp(2rem,5vw,5rem);line-height:1.02;max-width:17em;margin:0 0 clamp(3rem,7vw,7rem);color:var(--dp-cream)}
+.journey-section{background:var(--dp-cream);border-top:12px solid var(--tnt-purple)}
+.journey-head{margin-bottom:3rem}
+.current-plan{margin-bottom:5rem}
+.journal-chapter{border-top:1px solid var(--dp-ink);padding-top:2rem;margin-top:4rem}
+.chapter-label{display:flex;justify-content:space-between;gap:1rem;margin-bottom:2rem;font-size:.66rem;font-weight:900;letter-spacing:.16em}
+.journey-media{margin-top:4rem;border-top:1px solid var(--dp-ink);padding-top:4rem}
+.journey-photos{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:4rem}
+.journey-photos figure{margin:0;background:#111}
+.journey-photos img{width:100%;height:auto;display:block}
+.journey-video{max-width:1000px;margin:0 auto}
+.journey-video .video-frame{background:#111;border:0}
+.v9-about{background:#ded9cd;border-top:1px solid #aaa397}
+.v9-about .eyebrow{color:var(--dp-ink)}
+.final-cta{padding:clamp(5rem,10vw,10rem) 5vw;background:var(--dp-ink);color:var(--dp-cream);text-align:center;border-top:12px solid var(--tnt-green)}
+.final-cta .eyebrow{color:var(--tnt-green)}
+.final-cta h2{font-size:clamp(4rem,11vw,10rem);line-height:.8;letter-spacing:-.065em;margin:.2em auto;max-width:12em}
+.final-cta h2 em{font-style:normal;color:var(--tnt-green)}
+.final-cta p{font-family:Georgia,serif;font-size:clamp(2rem,5vw,5rem);margin:.7em 0 1em}
+.final-donate{background:var(--tnt-purple);color:#fff;border-color:var(--tnt-green);font-size:.78rem}
+.footer-mission{font-family:Georgia,serif;font-size:.8rem;line-height:1.5;max-width:430px}
+.footer-mission a{font-weight:800}
+.mobile-donate{background:var(--tnt-purple)!important;border-bottom-color:var(--tnt-green)!important}
+
+@media(max-width:800px){
+  .v9-hero h1{font-size:16.5vw;line-height:.82}
+  .mission-line{justify-content:flex-start}
+  .v9-mission{grid-template-columns:1fr}
+  .mission-goal{padding:4rem 5vw}
+  .org-card{grid-template-columns:1fr;padding:2.5rem 5vw}
+  .org-logo-wrap img{height:85px;max-width:210px}
+  .org-card h3{font-size:2.65rem}
+  .race-why{font-size:2.25rem}
+  .chapter-label{display:grid;gap:.5rem}
+  .journey-photos{grid-template-columns:1fr}
+  .final-cta{padding:6rem 5vw}
+  .final-cta h2{font-size:16vw}
+}
