@@ -1,0 +1,64 @@
+media:
+  input: uploads
+  output: /uploads
+
+content:
+  - name: journal
+    label: Journal
+    type: collection
+    path: journal
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, date, miles]
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: date
+        label: Date
+        type: date
+      - name: cover
+        label: Cover Photo
+        type: image
+        required: false
+      - name: description
+        label: Short Description
+        type: text
+        required: false
+      - name: miles
+        label: Miles
+        type: number
+        required: false
+      - name: body
+        label: Journal Entry
+        type: rich-text
+
+  - name: training
+    label: Road to 100
+    type: file
+    path: content/training.yml
+    fields:
+      - name: weekly_miles
+        label: Weekly Miles
+        type: number
+      - name: longest_run
+        label: Longest Run
+        type: number
+      - name: next_step
+        label: Next Step
+        type: string
+
+  - name: fundraising
+    label: Fundraising
+    type: file
+    path: content/fundraising.yml
+    fields:
+      - name: amount_raised
+        label: Amount Raised
+        type: number
+      - name: goal
+        label: Fundraising Goal
+        type: number
+      - name: fundraiser_url
+        label: Donation Page
+        type: string
