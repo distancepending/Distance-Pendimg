@@ -1,7 +1,5 @@
 {
   "name": "distance-pending",
   "compatibility_date": "2026-10-25",
-  "assets": {
-    "directory": "."
-  }
+  "assets": { "directory": "." }
 }
