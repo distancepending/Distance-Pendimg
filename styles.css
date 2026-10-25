@@ -249,3 +249,27 @@
  .instagram-placeholder{min-height:420px}
  .instagram-placeholder h3{font-size:3.4rem}
 }
+
+
+/* V9.2 — definitive mobile hero black-bar fix */
+.v5-hero-photo,
+.hero-photo{
+  background:transparent!important;
+  justify-content:flex-start!important;
+  min-height:0!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+.v5-hero-photo img,
+.hero-photo img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+.v5-hero-photo figcaption,
+.hero-photo figcaption{
+  display:none!important;
+}
