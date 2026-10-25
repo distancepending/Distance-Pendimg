@@ -125,3 +125,20 @@
  .training-snapshot{grid-template-columns:1fr 1fr}
  .training-snapshot div{border-bottom:1px solid #111}
 }
+
+/* V7 mission-first */
+:root{--tnt-purple:#5a2d7a;--tnt-green:#9be000;--bcu-red:#e32636}
+.hero h1{font-size:clamp(4rem,12vw,10rem);line-height:.82;letter-spacing:-.065em}
+.hero .eyebrow{color:var(--tnt-purple)}
+.fundraising-band{background:var(--tnt-purple)!important;border-top:14px solid var(--tnt-green);border-bottom:14px solid var(--bcu-red)}
+.mission-org-strip{display:grid;grid-template-columns:1fr 1fr;background:#111}
+.mission-org{min-height:260px;padding:3rem;display:flex;flex-direction:column;justify-content:space-between;text-decoration:none}
+.mission-org-tnt{background:var(--tnt-purple);border-bottom:12px solid var(--tnt-green)}
+.mission-org-bcu{background:var(--bcu-red);border-bottom:12px solid #111}
+.mission-org img{width:min(100%,330px);height:120px;object-fit:contain;object-position:left center}
+.mission-org span{margin-top:2rem;color:#fff;font-size:.72rem;font-weight:900;letter-spacing:.18em;line-height:1.5}
+.mission-org-tnt span{color:var(--tnt-green)}
+#race{border-top:14px solid var(--tnt-purple)}
+.journal-v6{border-top:14px solid var(--tnt-green)}
+.road-v6{border-top:14px solid var(--tnt-purple)}
+@media(max-width:800px){.hero h1{font-size:clamp(3.7rem,17vw,6.5rem)}.mission-org-strip{grid-template-columns:1fr}.mission-org{min-height:210px;padding:2rem}.mission-org img{height:90px;max-width:260px}}
