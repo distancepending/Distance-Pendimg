@@ -13,7 +13,7 @@
   <button class="menu" aria-label="Toggle menu">MENU</button>
   <nav>
     <a href="#mama">Why Joanie</a><a href="#mission">The Mission</a><a href="#race">100 Miles</a>
-    <a href="#journey">The Journey</a><a href="#about">Distance Pending</a>
+    <a href="#journey">The Journey</a><a href="#community">Community</a><a href="#about">Distance Pending</a>
   </nav>
 </header>
 
@@ -70,6 +70,18 @@
     <h2><span id="fund-goal">$50K</span><br>FOR BLOOD<br>CANCER.</h2>
     <p><strong id="fund-raised">$0 raised</strong> toward the goal. Every mile is tied to fundraising for Blood Cancer United through Team In Training.</p>
     <a class="button primary-donate light-donate" href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener">DONATE →</a>
+    <div class="donation-tiers">
+      <div class="tiers-head"><span>BE PART OF THE 100</span><small>Choose how you want to show up.</small></div>
+      <div class="tier-grid">
+        <a href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener"><strong>$25</strong><span>SUPPORT</span></a>
+        <a href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener"><strong>$50</strong><span>JOIN</span></a>
+        <a href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener"><strong>$100</strong><span>BACK</span></a>
+        <a href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener"><strong>$250</strong><span>GO FURTHER</span></a>
+        <a href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener"><strong>$500</strong><span>GO BIG</span></a>
+        <a href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener"><strong>$1,000</strong><span>ALL IN</span></a>
+      </div>
+      <a class="other-amount" href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener">OTHER AMOUNT →</a>
+    </div>
   </div>
 
   <div class="org-grid">
@@ -156,6 +168,71 @@
   </div>
 </section>
 
+
+<section id="community" class="section community-section">
+  <div class="community-intro">
+    <div class="eyebrow">MORE THAN 100 MILES</div>
+    <h2>Be part<br>of the road.</h2>
+    <p>This is Joanie's story, but it doesn't end with Joanie. Share a fighter, leave something for the hard miles, or just talk to me.</p>
+  </div>
+
+  <div class="community-grid">
+    <article class="community-card fighters-card">
+      <div class="card-number">01</div>
+      <div class="eyebrow">FIGHTERS LIKE JOANIE</div>
+      <h3>Share a fighter.</h3>
+      <p>Joanie was a fighter. We know she wasn't the only one. Share someone who fought cancer, is still fighting, or whose fight you remember.</p>
+      <button type="button" class="community-open" data-open="fighter-form">ADD A FIGHTER →</button>
+      <form id="fighter-form" class="community-form" hidden>
+        <label>Fighter's name<input name="fighter_name" required maxlength="80"></label>
+        <label>Your name <span>optional</span><input name="submitted_by" maxlength="80"></label>
+        <label>Photo <span>optional — add later after approval</span><input name="photo_note" placeholder="Tell me if you have a photo"></label>
+        <label>Their story <span>optional</span><textarea name="story" rows="5" maxlength="1200"></textarea></label>
+        <button type="submit">SUBMIT FOR APPROVAL →</button>
+        <p class="form-status" aria-live="polite"></p>
+      </form>
+    </article>
+
+    <article class="community-card hard-card">
+      <div class="card-number">02</div>
+      <div class="eyebrow">WHEN IT GETS HARD</div>
+      <h3>Leave me something for Mile 80.</h3>
+      <p>There will be a point during 100 miles when I want to stop. Leave me something to read when I get there. I'm not supposed to read these until race day.</p>
+      <button type="button" class="community-open" data-open="hard-form">LEAVE A MESSAGE →</button>
+      <form id="hard-form" class="community-form" hidden>
+        <label>Your name <span>optional</span><input name="name" maxlength="80"></label>
+        <label>Message for the hard miles<textarea name="message" required rows="5" maxlength="800"></textarea></label>
+        <button type="submit">SAVE IT FOR RACE DAY →</button>
+        <p class="form-status" aria-live="polite"></p>
+      </form>
+    </article>
+
+    <article class="community-card talk-card">
+      <div class="card-number">03</div>
+      <div class="eyebrow">TALK TO ME</div>
+      <h3>Actually, talk to me.</h3>
+      <p>Questions about the training, the mission, Joanie, the Daytona 100, or why anyone would voluntarily run this far? Send me a message.</p>
+      <button type="button" class="community-open" data-open="talk-form">SEND A MESSAGE →</button>
+      <form id="talk-form" class="community-form" hidden>
+        <label>Your name<input name="name" required maxlength="80"></label>
+        <label>Email<input name="email" type="email" required maxlength="160"></label>
+        <label>Message<textarea name="message" required rows="5" maxlength="1500"></textarea></label>
+        <button type="submit">SEND →</button>
+        <p class="form-status" aria-live="polite"></p>
+      </form>
+    </article>
+  </div>
+
+  <div class="fighters-wall">
+    <div class="chapter-label"><span>FIGHTERS LIKE JOANIE</span><span>COMMUNITY STORIES · APPROVED BEFORE PUBLISHING</span></div>
+    <div class="fighters-empty">
+      <strong>JOANIE CARDOZA</strong>
+      <span>THE FIRST FIGHTER.</span>
+      <p>More fighters will appear here as their stories are shared.</p>
+    </div>
+  </div>
+</section>
+
 <section id="about" class="section about v9-about">
   <div class="eyebrow">DISTANCE PENDING</div>
   <h2>You rarely know how far you actually have to go.</h2>
@@ -211,4 +288,32 @@ async function loadCMS(){
 }
 loadCMS();
 </script>
+
+<script>
+(() => {
+  document.querySelectorAll('.community-open').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const form = document.getElementById(btn.dataset.open);
+      const willOpen = form.hasAttribute('hidden');
+      document.querySelectorAll('.community-form').forEach(f => f.setAttribute('hidden',''));
+      if (willOpen) {
+        form.removeAttribute('hidden');
+        btn.setAttribute('aria-expanded','true');
+        const first = form.querySelector('input,textarea');
+        if(first) first.focus();
+      } else {
+        btn.setAttribute('aria-expanded','false');
+      }
+    });
+  });
+  document.querySelectorAll('.community-form').forEach(form => {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const status = form.querySelector('.form-status');
+      status.textContent = 'Form is ready — submission delivery will be connected in the next setup step.';
+    });
+  });
+})();
+</script>
+
 </body></html>

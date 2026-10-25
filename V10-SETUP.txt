@@ -1,0 +1,15 @@
+DISTANCE PENDING V10 — COMMUNITY
+
+Included:
+- BE PART OF THE 100 donation tiers
+  $25 Support / $50 Join / $100 Back / $250 Go Further / $500 Go Big / $1,000 All In
+- Fighters Like Joanie submission UI
+- When It Gets Hard race-day message UI
+- Talk To Me contact UI
+- Fighters Like Joanie public wall starter
+- V9.2 hero fix and Instagram section retained
+
+IMPORTANT:
+The three community forms are intentionally not connected to a public data endpoint yet.
+They validate and display a setup message instead of pretending a submission was delivered.
+A backend/storage + moderation step is required before real submissions can be accepted.

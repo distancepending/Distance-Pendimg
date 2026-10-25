@@ -273,3 +273,57 @@
 .hero-photo figcaption{
   display:none!important;
 }
+
+
+/* V10 — donation participation + community interaction */
+.donation-tiers{margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.35)}
+.tiers-head{display:flex;justify-content:space-between;gap:1rem;align-items:end;margin-bottom:1rem}
+.tiers-head span{font-size:.72rem;font-weight:900;letter-spacing:.16em;color:var(--tnt-green)}
+.tiers-head small{font-family:Georgia,serif;font-size:.85rem}
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.3)}
+.tier-grid a{background:var(--tnt-purple);color:#fff;text-decoration:none;padding:1.25rem;min-height:105px;display:flex;flex-direction:column;justify-content:space-between;transition:background .15s}
+.tier-grid a:hover{background:#fff;color:var(--dp-ink)}
+.tier-grid strong{font-size:1.8rem;letter-spacing:-.04em}
+.tier-grid span{font-size:.62rem;font-weight:900;letter-spacing:.14em}
+.other-amount{display:inline-block;margin-top:1rem;color:#fff;font-size:.68rem;font-weight:900;letter-spacing:.14em}
+
+.community-section{padding:0;background:var(--dp-cream);border-top:12px solid var(--tnt-green)}
+.community-intro{padding:clamp(4rem,8vw,8rem) 5vw;display:grid;grid-template-columns:.45fr 1.1fr .75fr;gap:3vw;align-items:end}
+.community-intro h2{font-size:clamp(4.5rem,10vw,10rem);line-height:.78;margin:0;letter-spacing:-.065em}
+.community-intro p{font-family:Georgia,serif;font-size:1.2rem;line-height:1.55;max-width:34rem}
+.community-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--dp-ink);border-bottom:1px solid var(--dp-ink)}
+.community-card{padding:clamp(2rem,4vw,4rem);min-width:0;position:relative;border-right:1px solid var(--dp-ink)}
+.community-card:last-child{border-right:0}
+.card-number{font-size:.65rem;font-weight:900;letter-spacing:.16em;margin-bottom:4rem}
+.community-card h3{font-size:clamp(2.3rem,4vw,4.4rem);line-height:.88;letter-spacing:-.05em;margin:.35rem 0 1.5rem}
+.community-card>p{font-family:Georgia,serif;line-height:1.55;min-height:8em}
+.fighters-card{border-top:10px solid var(--bcu-red)}
+.hard-card{border-top:10px solid var(--tnt-green)}
+.talk-card{border-top:10px solid var(--tnt-purple)}
+.community-open,.community-form button{appearance:none;border:0;background:var(--dp-ink);color:#fff;padding:1rem 1.1rem;font-size:.67rem;font-weight:900;letter-spacing:.13em;cursor:pointer;min-height:48px}
+.community-form{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--dp-ink)}
+.community-form[hidden]{display:none}
+.community-form label{display:block;font-size:.66rem;font-weight:900;letter-spacing:.1em;margin-bottom:1rem}
+.community-form label span{font-weight:500;letter-spacing:0;opacity:.6}
+.community-form input,.community-form textarea{display:block;width:100%;box-sizing:border-box;margin-top:.5rem;padding:.9rem;border:1px solid #aaa;background:#fff;color:#111;font:16px/1.4 Arial,sans-serif;border-radius:0}
+.community-form textarea{resize:vertical}
+.community-form button{margin-top:.25rem;background:var(--tnt-purple)}
+.form-status{font-family:Georgia,serif;font-size:.82rem;line-height:1.4;margin-top:1rem}
+.fighters-wall{padding:clamp(4rem,8vw,8rem) 5vw}
+.fighters-empty{border-top:1px solid var(--dp-ink);padding:2rem 0;display:grid;grid-template-columns:1fr 1fr 2fr;gap:2rem;align-items:start}
+.fighters-empty strong{font-size:clamp(1.7rem,3vw,3rem);letter-spacing:-.04em}
+.fighters-empty span{font-size:.65rem;font-weight:900;letter-spacing:.16em;color:var(--bcu-red)}
+.fighters-empty p{font-family:Georgia,serif;margin:0;line-height:1.5}
+
+@media(max-width:800px){
+ .tier-grid{grid-template-columns:repeat(2,1fr)}
+ .tiers-head{display:grid}
+ .community-intro{grid-template-columns:1fr;padding:4rem 5vw}
+ .community-intro h2{font-size:16vw}
+ .community-grid{grid-template-columns:1fr}
+ .community-card{border-right:0;border-bottom:1px solid var(--dp-ink);padding:3rem 5vw}
+ .community-card:last-child{border-bottom:0}
+ .community-card>p{min-height:0;margin-bottom:2rem}
+ .card-number{margin-bottom:2.5rem}
+ .fighters-empty{grid-template-columns:1fr;gap:1rem}
+}
