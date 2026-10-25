@@ -1,11 +1,5 @@
-DISTANCE PENDING — V1
+DISTANCE PENDING — V2
 
-Files:
-- index.html
-- styles.css
-- assets/logo-cream.png
-- assets/logo-dark.png
+Core Distance Pending editorial look preserved, with Team In Training and Blood Cancer United mission branding layered into fundraising-specific areas.
 
-Upload everything inside this folder to the root of your GitHub Distance-Pending repository.
-
-The fundraiser, Instagram @distancepending, and YouTube @distancepending are already linked.
+Upload/replace index.html and styles.css in the GitHub repository. Upload the assets folder contents. Keep your existing wrangler.jsonc unchanged.
