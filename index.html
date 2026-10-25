@@ -132,8 +132,8 @@
   </div>
 
   <div class="training-snapshot">
-    <div><strong>38.19</strong><span>Week 1 actual</span></div>
-    <div><strong>41</strong><span>Week 2 actual</span></div>
+    <div><strong id="week-1-actual">38.19</strong><span>Week 1 actual</span></div>
+    <div><strong id="week-2-actual">41</strong><span>Week 2 actual</span></div>
     <div><strong id="planned-week-miles">44</strong><span id="planned-week-label">Week 3 planned</span></div>
     <div><strong id="longest-run">12</strong><span>Longest planned run this week</span></div>
   </div>
@@ -260,6 +260,48 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Number(n||0));
 const simpleMarkdown=t=>esc(t||'').replace(/^### (.*)$/gm,'<h4>$1</h4>').replace(/^## (.*)$/gm,'<h4>$1</h4>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
 async function getJSON(path){const r=await fetch(path+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error(path);return r.json()}
+const TRAINING_PLAN_START = new Date('2026-10-12T12:00:00');
+function currentTrainingWeek(){
+ const now=new Date();
+ const days=Math.floor((now-TRAINING_PLAN_START)/86400000);
+ return Math.max(1,Math.floor(days/7)+1);
+}
+function trainingWeekBlock(text,week){
+ const normalized=String(text||'').replace(/\r/g,'').replace(/\u00a0/g,' ');
+ const re=new RegExp(`(?:^|\\n)\\s*WEEK\\s+${week}\\b([\\s\\S]*?)(?=\\n\\s*WEEK\\s+${week+1}\\b|$)`,'i');
+ const match=normalized.match(re);
+ return match?match[0]:'';
+}
+function fieldNumber(block,label){
+ const patterns=[
+  new RegExp(`${label}\\s*(?:MILES?)?\\s*[:–—-]?\\s*(\\d+(?:\\.\\d+)?)`,'i'),
+  new RegExp(`${label}[^\\d\\n]{0,30}(\\d+(?:\\.\\d+)?)`,'i')
+ ];
+ for(const re of patterns){const m=block.match(re);if(m)return Number(m[1]);}
+ return null;
+}
+async function syncTrainingMileageFromGoogleDoc(training){
+ try{
+  const r=await fetch('/api/training-plan?v='+Date.now(),{cache:'no-store'});
+  if(!r.ok)throw new Error('training plan');
+  const text=await r.text();
+  const activeWeek=currentTrainingWeek();
+  const weeksToUpdate=new Set([1,2,activeWeek,Number(training.week)]);
+  weeksToUpdate.forEach(week=>{
+   const block=trainingWeekBlock(text,week);
+   if(!block)return;
+   const actual=fieldNumber(block,'ACTUAL');
+   const planned=fieldNumber(block,'PLANNED');
+   const actualEl=document.getElementById(`week-${week}-actual`);
+   if(actualEl&&actual!=null)actualEl.textContent=actual;
+   if(week===Number(training.week)&&planned!=null){
+    document.getElementById('planned-week-miles').textContent=planned;
+    document.getElementById('current-week-mileage').textContent=`${planned} PLANNED MILES`;
+    document.getElementById('next-step').textContent=`Next up: ${planned} planned miles.`;
+   }
+  });
+ }catch(err){console.warn('Google Doc mileage sync unavailable; using site fallback data.',err);}
+}
 async function loadCMS(){
  try{
   const [journal,training,fund]=await Promise.all([getJSON('/content/journal.json'),getJSON('/content/training.json'),getJSON('/content/fundraising.json')]);
@@ -279,6 +321,7 @@ async function loadCMS(){
   document.getElementById('current-week-mileage').textContent=`${training.weekly_miles} PLANNED MILES`;
   document.getElementById('next-step').textContent=training.next_step;
   document.getElementById('current-schedule').innerHTML=(training.schedule||[]).map(x=>`<div class="schedule-row"><span>${esc(x.day)}</span><strong>${esc(x.run)}</strong><em>${esc(x.strength||'—')}</em><b>${esc(x.status||'Planned')}</b></div>`).join('');
+  await syncTrainingMileageFromGoogleDoc(training);
   document.getElementById('fund-goal').textContent=Number(fund.goal)===50000?'$50K':money(fund.goal);
   document.getElementById('fund-raised').textContent=`${money(fund.amount_raised)} raised`;
   document.querySelectorAll('a[href*="pages.lls.org"]').forEach(a=>{if(fund.fundraiser_url)a.href=fund.fundraiser_url});

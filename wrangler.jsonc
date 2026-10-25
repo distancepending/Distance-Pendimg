@@ -1,8 +1,11 @@
 {
   "name": "distance-pending",
+  "main": "worker.js",
   "compatibility_date": "2026-10-25",
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
   },
   "routes": [
     {
