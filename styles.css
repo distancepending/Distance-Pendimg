@@ -92,3 +92,11 @@
  .v5-hero-photo img,.mama-v5-photo img,.natural-photo img,.photo-strip-v5 img{height:auto!important;object-fit:contain!important;object-position:center!important}
  .journal-copy{padding-top:1.5rem}
 }
+
+.joanie-name{
+  margin:-.5rem 0 2rem;
+  font-size:.78rem;
+  font-weight:900;
+  letter-spacing:.24em;
+  color:#9be000;
+}
