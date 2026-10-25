@@ -231,3 +231,21 @@
   .final-cta{padding:6rem 5vw}
   .final-cta h2{font-size:16vw}
 }
+
+/* V9.1 — hero cleanup + Instagram journey */
+.v5-hero-photo::after,.hero-photo::after{display:none!important;content:none!important}
+.v5-hero-photo,.hero-photo{padding-bottom:0!important;border-bottom:0!important}
+.v5-hero-photo img,.hero-photo img{display:block;margin-bottom:0!important}
+.v5-hero-photo figcaption,.hero-photo figcaption{background:transparent!important;color:var(--dp-ink)!important;border:0!important;padding:.65rem 0!important}
+.instagram-road{margin-top:4rem;border-top:1px solid var(--dp-ink);padding-top:2rem}
+.instagram-placeholder{background:var(--dp-ink);color:var(--dp-cream);padding:clamp(2.5rem,6vw,6rem);min-height:330px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;position:relative;overflow:hidden}
+.instagram-placeholder::before{content:"";position:absolute;inset:0 0 auto 0;height:10px;background:linear-gradient(90deg,var(--tnt-purple) 0 48%,var(--tnt-green) 48% 72%,var(--bcu-red) 72% 100%)}
+.instagram-mark{position:absolute;right:5%;top:12%;font-size:clamp(6rem,20vw,18rem);line-height:.7;font-weight:950;letter-spacing:-.09em;opacity:.06}
+.instagram-placeholder h3{font-size:clamp(2.6rem,6vw,6rem);line-height:.88;letter-spacing:-.05em;max-width:8em;margin:0 0 1rem}
+.instagram-placeholder p{font-family:Georgia,serif;line-height:1.55;max-width:36rem;margin:0 0 2rem}
+.instagram-follow{background:var(--tnt-purple);color:#fff;border-color:var(--tnt-green)}
+.instagram-live-feed:empty{display:none}
+@media(max-width:800px){
+ .instagram-placeholder{min-height:420px}
+ .instagram-placeholder h3{font-size:3.4rem}
+}

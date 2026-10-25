@@ -1,0 +1,4 @@
+Instagram feed section is prepared in V9.1.
+The Follow CTA links to @distancepending.
+The empty #instagram-live-feed hook is reserved for an automatic feed widget/API.
+No third-party widget credentials are hard-coded into the public repository.
