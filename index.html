@@ -430,9 +430,7 @@ async function loadCMS(){
   window.__dpJournal=sorted;
   feed.innerHTML=sorted.map(e=>{const slug=e.slug||slugify(e.title);return `<article class="training-week journal-week cms-journal-entry" data-entry="${esc(slug)}">${e.cover?`<img class="journal-cover" src="${esc(e.cover)}" alt="">`:''}<div class="week-top"><div><span>TRAINING JOURNAL</span><h3>${esc(e.title)}</h3><small>${new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</small></div>${e.miles!==''&&e.miles!=null?`<strong class="week-mileage">${esc(e.miles)} MILES</strong>`:''}</div>${e.description?`<p class="journal-description">${esc(e.description)}</p>`:''}<div class="journal-body collapsed"><p>${simpleMarkdown(e.body)}</p>${e.youtube?`<p><a href="${esc(e.youtube)}" target="_blank" rel="noopener">WATCH THIS CHAPTER ON YOUTUBE ↗</a></p>`:''}</div><div class="journal-actions"><button class="journal-toggle" type="button">READ THE ENTRY →</button><button class="journal-link" type="button" data-copy-entry="${esc(slug)}">SHARE ENTRY →</button></div></article>`}).join('')||'<p>No journal entries yet.</p>';
   const totalMiles=sorted.reduce((s,e)=>s+(Number(e.miles)||0),0);
-  document.getElementById('live-latest').textContent=sorted[0]?sorted[0].title.toUpperCase():'THE BUILD';  document.getElementById('live-week').textContent=`WEEK ${training.week}`;
-  document.getElementById('live-phase').textContent=/pivot|injur|rehab/i.test((sorted[0]?.title||'')+' '+(sorted[0]?.description||''))?'PIVOT · REHAB':'ROAD TO 100';
-  document.getElementById('planned-week-miles').textContent=training.weekly_miles;
+document.getElementById('planned-week-miles').textContent=training.weekly_miles;
   document.getElementById('planned-week-label').textContent=`Week ${training.week} planned`;
   document.getElementById('longest-run').textContent=training.longest_run;
   document.getElementById('current-week-label').textContent=`THIS WEEK · WEEK ${training.week}`;
