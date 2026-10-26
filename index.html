@@ -55,6 +55,23 @@
 .top-progress-side small{display:block;font-size:9px;letter-spacing:.08em;font-weight:700;opacity:.8}.top-progress-track{height:5px;border:1px solid rgba(244,239,229,.55);margin-top:12px;overflow:hidden}.top-progress-track i{display:block;height:100%;width:0;background:#f4efe5;transition:width .7s ease}
 @media(max-width:520px){.top-progress-side{padding:17px 18px 15px}.top-progress-side>strong{font-size:31px}.top-progress-side small{font-size:8px}}
 </style>
+<style>
+.joanie-album{grid-column:1/-1;width:100%;overflow:hidden;margin:10px 0 36px}
+.joanie-album-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:0 0 12px;scrollbar-width:none}
+.joanie-album-track::-webkit-scrollbar{display:none}
+.joanie-album figure{flex:0 0 min(78vw,560px);height:430px;margin:0;scroll-snap-align:start;background:#111;overflow:hidden}
+.joanie-album img{width:100%;height:100%;display:block;object-fit:contain;background:#111}
+@media(max-width:700px){
+ .joanie-album{margin:4px 0 28px}
+ .joanie-album-track{gap:8px}
+ .joanie-album figure{flex-basis:84vw;height:58vh;max-height:520px;min-height:330px}
+}
+</style>
+<style>
+.joanie-video{grid-column:1/-1;width:100%;margin:0 0 36px;background:#111}
+.joanie-video video{display:block;width:100%;max-height:78vh;background:#111;object-fit:contain}
+@media(max-width:700px){.joanie-video{margin-bottom:28px}.joanie-video video{max-height:72vh}}
+</style>
 </head>
 <body>
 <header>
@@ -116,6 +133,27 @@
     <img src="/mama-joanie-wide.jpeg" alt="Mama Joanie embracing Lexi">
     <figcaption>MAMA JOANIE WITH HER GRANDDAUGHTER, LEXI</figcaption>
   </figure>
+
+  <div class="joanie-album" aria-label="Mama Joanie family photo album">
+    <div class="joanie-album-track">
+      <figure><img src="/joanie-family-01.jpeg" alt="Mama Joanie family photo" loading="lazy"></figure>
+      <figure><img src="/joanie-family-02.jpeg" alt="Mama Joanie family photo" loading="lazy"></figure>
+      <figure><img src="/joanie-family-03.jpeg" alt="Mama Joanie family photo" loading="lazy"></figure>
+      <figure><img src="/joanie-family-04.jpeg" alt="Mama Joanie family photo" loading="lazy"></figure>
+      <figure><img src="/joanie-family-05.jpeg" alt="Mama Joanie family photo" loading="lazy"></figure>
+      <figure><img src="/joanie-family-06.jpeg" alt="Mama Joanie family photo" loading="lazy"></figure>
+      <figure><img src="/joanie-family-07.jpeg" alt="Mama Joanie family photo" loading="lazy"></figure>
+      <figure><img src="/joanie-family-08.jpeg" alt="Mama Joanie family photo" loading="lazy"></figure>
+      <figure><img src="/joanie-family-09.jpeg" alt="Mama Joanie family photo" loading="lazy"></figure>
+    </div>
+  </div>
+
+  <div class="joanie-video">
+    <video controls playsinline preload="metadata">
+      <source src="/mama-joanie-video.mov" type="video/quicktime">
+      Your browser does not support embedded video.
+    </video>
+  </div>
 
   <div class="suzanna-quote">
     <div class="quote-mark">“</div>
