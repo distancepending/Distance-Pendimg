@@ -40,6 +40,14 @@
 .entry-overlay{position:fixed;inset:0;background:#f4efe5;color:#111;z-index:9999;overflow:auto;padding:70px max(6vw,22px)}.entry-overlay[hidden]{display:none}.entry-overlay-inner{max-width:850px;margin:auto}.entry-close{position:fixed;right:24px;top:20px;border:1px solid #111;background:#f4efe5;padding:10px 14px;font-weight:800}.entry-overlay h1{font-size:clamp(44px,8vw,90px);line-height:.9}.entry-overlay .journal-body{font-size:18px;line-height:1.65}
 @media(max-width:760px){.live-strip{grid-template-columns:1fr 1fr}.mile-grid{grid-template-columns:repeat(10,1fr)}.road-stats-rich{grid-template-columns:1fr 1fr}.follow-form{display:block}.follow-form input,.follow-form button{width:100%;box-sizing:border-box;margin-bottom:8px}}
 </style>
+<style>
+.road-total-box h3{font-size:clamp(34px,6vw,58px);line-height:.95;margin:16px 0 8px}
+.road-total-box p{margin:0 0 18px}
+.road-total-track{height:14px;border:1px solid #111;overflow:hidden}
+.road-total-fill{height:100%;width:0;background:#111;transition:width .7s ease}
+.road-total-meta{display:flex;justify-content:space-between;gap:15px;margin-top:9px;font-size:10px;font-weight:800;letter-spacing:.08em}
+@media(max-width:600px){.road-total-meta{flex-direction:column;gap:4px}}
+</style>
 </head>
 <body>
 <header>
@@ -169,7 +177,13 @@
     <p>The plan, what actually happened, and the miles between here and Daytona.</p>
   </div>
 
-  <div class="since-box" id="since-box"><div class="eyebrow">SINCE YOU WERE HERE</div><h3 id="since-title">The road keeps moving.</h3><p id="since-copy">Loading the latest change…</p></div>
+  <div class="since-box road-total-box" id="road-total-box">
+  <div class="eyebrow">ROAD TO DAYTONA</div>
+  <h3><span id="road-actual-total">79.19</span> MILES RUN</h3>
+  <p>of <strong id="road-planned-total">—</strong> total planned training miles</p>
+  <div class="road-total-track"><div class="road-total-fill" id="road-total-fill"></div></div>
+  <div class="road-total-meta"><span id="road-total-percent">CALCULATING PLAN…</span><span>DAYTONA 100 · DEC 2027</span></div>
+</div>
   <div class="road-stats-rich"><div><strong id="total-journal-miles">0</strong><span>RECORDED RUN MILES</span></div><div><strong id="weeks-in-build">1</strong><span>WEEKS INTO THE BUILD</span></div><div><strong id="journal-count">0</strong><span>JOURNAL ENTRIES</span></div><div><strong>DEC '27</strong><span>DAYTONA 100</span></div></div>
   <div class="training-snapshot">
     <div><strong id="week-1-actual">38.19</strong><span>Week 1 actual</span></div>
@@ -334,11 +348,44 @@ function fieldNumber(block,label){
  for(const re of patterns){const m=block.match(re);if(m)return Number(m[1]);}
  return null;
 }
+function roadTrainingTotals(text){
+ const normalized=String(text||'').replace(/\r/g,'').replace(/\u00a0/g,' ');
+ const weekStarts=[...normalized.matchAll(/(?:^|\n)\s*WEEK\s+(\d+)\b/gi)];
+ let planned=0,actual=0;
+ weekStarts.forEach((m,i)=>{
+  const start=m.index+(m[0].startsWith('\n')?1:0);
+  const end=i+1<weekStarts.length?weekStarts[i+1].index:normalized.length;
+  const block=normalized.slice(start,end);
+  const p=fieldNumber(block,'PLANNED');
+  const a=fieldNumber(block,'ACTUAL');
+  if(p!=null)planned+=p;
+  if(a!=null)actual+=a;
+ });
+ return {planned,actual};
+}
+function renderRoadTrainingTotals(text){
+ const t=roadTrainingTotals(text);
+ const actual=document.getElementById('road-actual-total');
+ const planned=document.getElementById('road-planned-total');
+ const fill=document.getElementById('road-total-fill');
+ const pct=document.getElementById('road-total-percent');
+ if(t.actual>0)actual.textContent=t.actual.toFixed(t.actual%1?2:0);
+ if(t.planned>0){
+  planned.textContent=t.planned.toLocaleString(undefined,{maximumFractionDigits:2});
+  const value=Math.min(100,(t.actual/t.planned)*100);
+  fill.style.width=`${value}%`;
+  pct.textContent=`${value.toFixed(1)}% OF PLANNED MILEAGE COMPLETE`;
+ }else{
+  planned.textContent='—';
+  pct.textContent='PLAN TOTAL UNAVAILABLE';
+ }
+}
 async function syncTrainingMileageFromGoogleDoc(training){
  try{
   const r=await fetch('/api/training-plan?v='+Date.now(),{cache:'no-store'});
   if(!r.ok)throw new Error('training plan');
   const text=await r.text();
+  renderRoadTrainingTotals(text);
   const activeWeek=currentTrainingWeek();
   const weeksToUpdate=new Set([1,2,activeWeek,Number(training.week)]);
   weeksToUpdate.forEach(week=>{
@@ -367,10 +414,7 @@ async function loadCMS(){
   document.getElementById('total-journal-miles').textContent=totalMiles.toFixed(totalMiles%1?2:0);
   document.getElementById('journal-count').textContent=sorted.length;
   document.getElementById('weeks-in-build').textContent=currentTrainingWeek();
-  document.getElementById('live-latest').textContent=sorted[0]?sorted[0].title.toUpperCase():'THE BUILD';
-  document.getElementById('since-title').textContent=sorted[0]?sorted[0].title:'The road keeps moving.';
-  document.getElementById('since-copy').textContent=sorted[0]?(sorted[0].description||'A new journal entry is live.'):'The first chapter is being written.';
-  document.getElementById('live-week').textContent=`WEEK ${training.week}`;
+  document.getElementById('live-latest').textContent=sorted[0]?sorted[0].title.toUpperCase():'THE BUILD';  document.getElementById('live-week').textContent=`WEEK ${training.week}`;
   document.getElementById('live-phase').textContent=/pivot|injur|rehab/i.test((sorted[0]?.title||'')+' '+(sorted[0]?.description||''))?'PIVOT · REHAB':'ROAD TO 100';
   document.getElementById('planned-week-miles').textContent=training.weekly_miles;
   document.getElementById('planned-week-label').textContent=`Week ${training.week} planned`;
