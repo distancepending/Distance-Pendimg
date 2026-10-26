@@ -293,7 +293,7 @@
   <blockquote>“The distance is pending.<br>Just the next step.”</blockquote>
 </section>
 
-<section class="follow-road" id="follow-road"><div class="eyebrow">FOLLOW THE ROAD</div><h2>You don't need<br>another newsletter.</h2><p>I'll send something when there's actually something worth sending — a major training milestone, a new chapter, a fundraising breakthrough, or race week.</p><form class="follow-form" id="follow-form"><input type="email" name="email" placeholder="YOUR EMAIL" required><button type="submit">FOLLOW THE ROAD →</button></form><p class="follow-note" id="follow-note">No weekly marketing machine. Just the important stuff.</p></section>
+
 <section class="final-cta">
   <div class="eyebrow">THE MISSION IS BIGGER THAN THE MILES</div>
   <h2>100 MILES.<br>$50,000.<br><em>ONE REASON.</em></h2>
@@ -443,7 +443,6 @@ loadCMS();
  const close=()=>{overlay.hidden=true;document.body.style.overflow='';if(location.pathname.startsWith('/journal/'))history.pushState({},'',location.origin+'/#journal')};
  document.addEventListener('click',async ev=>{const t=ev.target.closest('.journal-toggle');if(t){openEntry(t.closest('.journal-week').dataset.entry);return}const s=ev.target.closest('[data-copy-entry]');if(s){const slug=s.dataset.copyEntry,url=`${location.origin}/journal/${slug}`;try{if(navigator.share)await navigator.share({title:'Distance Pending',url});else{await navigator.clipboard.writeText(url);s.textContent='LINK COPIED ✓';setTimeout(()=>s.textContent='SHARE ENTRY →',1800)}}catch(e){}}});
  document.getElementById('entry-close').onclick=close;
- document.getElementById('follow-form').addEventListener('submit',e=>{e.preventDefault();document.getElementById('follow-note').textContent='Email signup is designed — delivery connection is the next backend step.'});
  const timer=setInterval(()=>{if(window.__dpJournal){clearInterval(timer);if(location.pathname.startsWith('/journal/'))openEntry(location.pathname.split('/').filter(Boolean).pop(),false)}},100);
 })();
 </script>
