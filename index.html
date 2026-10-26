@@ -30,6 +30,16 @@
 }
 </style>
 
+<style>
+.live-strip{display:grid;grid-template-columns:repeat(4,1fr);background:#111;color:#f4efe5;border-block:1px solid #111}.live-strip>div{padding:14px 18px}.live-strip small{display:block;font-size:10px;letter-spacing:.12em;opacity:.6;margin-bottom:4px}.live-strip strong{font-size:13px}
+.mile-fund-wrap{margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.25)}.mile-fund-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:14px}.mile-grid{display:grid;grid-template-columns:repeat(20,1fr);gap:4px}.mile-dot{aspect-ratio:1;border:1px solid currentColor;display:grid;place-items:center;font-size:8px;font-weight:800;opacity:.3}.mile-dot.funded{opacity:1;background:currentColor}.mile-dot.funded span{filter:invert(1)}.fund-road-note{font-size:12px;opacity:.75}
+.road-stats-rich{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#111;margin:26px 0}.road-stats-rich>div{background:#f4efe5;padding:22px}.road-stats-rich strong{display:block;font-size:34px}.road-stats-rich span{font-size:10px;letter-spacing:.1em}
+.since-box{border:1px solid #111;padding:20px;margin-bottom:26px}.since-box h3{margin:5px 0 8px;font-size:22px}.since-box p{margin:0}
+.journal-week .journal-body{max-height:220px;overflow:hidden;position:relative}.journal-week .journal-body.collapsed:after{content:"";position:absolute;inset:auto 0 0;height:80px;background:linear-gradient(transparent,#f4efe5)}.journal-actions{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px}.journal-toggle,.journal-link{border:0;background:none;padding:0;text-decoration:underline;font:inherit;font-weight:800;cursor:pointer;color:inherit}
+.follow-road{padding:55px 5vw;background:#111;color:#f4efe5}.follow-road h2{font-size:clamp(40px,7vw,90px);line-height:.9;margin:10px 0 18px}.follow-road p{max-width:650px}.follow-form{display:flex;gap:8px;max-width:620px;margin-top:22px}.follow-form input{flex:1;padding:14px;border:1px solid #f4efe5;background:transparent;color:#f4efe5;font:inherit}.follow-form button{padding:14px 18px;border:0;font-weight:800}.follow-note{font-size:12px;opacity:.7}
+.entry-overlay{position:fixed;inset:0;background:#f4efe5;color:#111;z-index:9999;overflow:auto;padding:70px max(6vw,22px)}.entry-overlay[hidden]{display:none}.entry-overlay-inner{max-width:850px;margin:auto}.entry-close{position:fixed;right:24px;top:20px;border:1px solid #111;background:#f4efe5;padding:10px 14px;font-weight:800}.entry-overlay h1{font-size:clamp(44px,8vw,90px);line-height:.9}.entry-overlay .journal-body{font-size:18px;line-height:1.65}
+@media(max-width:760px){.live-strip{grid-template-columns:1fr 1fr}.mile-grid{grid-template-columns:repeat(10,1fr)}.road-stats-rich{grid-template-columns:1fr 1fr}.follow-form{display:block}.follow-form input,.follow-form button{width:100%;box-sizing:border-box;margin-bottom:8px}}
+</style>
 </head>
 <body>
 <header>
@@ -40,6 +50,7 @@
     <a href="#journey">The Journey</a><a href="#community">Community</a><a href="#about">Distance Pending</a>
   </nav>
 </header>
+<div class="live-strip"><div><small>RIGHT NOW</small><strong id="live-phase">ROAD TO 100</strong></div><div><small>CURRENT WEEK</small><strong id="live-week">WEEK 3</strong></div><div><small>NEXT RACE</small><strong>DAYTONA 100 · DEC 2027</strong></div><div><small>LATEST</small><strong id="live-latest">LOADING…</strong></div></div>
 
 <main id="top">
 <section class="hero v9-hero">
@@ -96,6 +107,7 @@
     <p><strong id="fund-raised">$0 raised</strong> toward the goal. Every mile is tied to fundraising for Blood Cancer United through Team In Training.</p>
     <a class="button primary-donate light-donate" href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener">DONATE →</a>
     <button type="button" class="button share-mission" data-share-mission>CAN’T DONATE? SHARE THE MISSION →</button>
+<div class="mile-fund-wrap"><div class="mile-fund-head"><div><span>100 MILES · $50,000</span><br><strong id="funded-miles">0 OF 100 MILES FUNDED</strong></div><span>$500 = 1 MILE</span></div><div class="mile-grid" id="mile-grid"></div><p class="fund-road-note" id="fund-road-note">Every $500 raised moves the mission one mile farther down the road.</p></div>
     <div class="donation-tiers">
       <div class="tiers-head"><span>BE PART OF THE 100</span><small>Choose how you want to show up.</small></div>
       <div class="tier-grid">
@@ -157,6 +169,8 @@
     <p>The plan, what actually happened, and the miles between here and Daytona.</p>
   </div>
 
+  <div class="since-box" id="since-box"><div class="eyebrow">SINCE YOU WERE HERE</div><h3 id="since-title">The road keeps moving.</h3><p id="since-copy">Loading the latest change…</p></div>
+  <div class="road-stats-rich"><div><strong id="total-journal-miles">0</strong><span>RECORDED RUN MILES</span></div><div><strong id="weeks-in-build">1</strong><span>WEEKS INTO THE BUILD</span></div><div><strong id="journal-count">0</strong><span>JOURNAL ENTRIES</span></div><div><strong>DEC '27</strong><span>DAYTONA 100</span></div></div>
   <div class="training-snapshot">
     <div><strong id="week-1-actual">38.19</strong><span>Week 1 actual</span></div>
     <div><strong id="week-2-actual">41</strong><span>Week 2 actual</span></div>
@@ -266,6 +280,7 @@
   <blockquote>“The distance is pending.<br>Just the next step.”</blockquote>
 </section>
 
+<section class="follow-road" id="follow-road"><div class="eyebrow">FOLLOW THE ROAD</div><h2>You don't need<br>another newsletter.</h2><p>I'll send something when there's actually something worth sending — a major training milestone, a new chapter, a fundraising breakthrough, or race week.</p><form class="follow-form" id="follow-form"><input type="email" name="email" placeholder="YOUR EMAIL" required><button type="submit">FOLLOW THE ROAD →</button></form><p class="follow-note" id="follow-note">No weekly marketing machine. Just the important stuff.</p></section>
 <section class="final-cta">
   <div class="eyebrow">THE MISSION IS BIGGER THAN THE MILES</div>
   <h2>100 MILES.<br>$50,000.<br><em>ONE REASON.</em></h2>
@@ -273,7 +288,7 @@
   <a class="button final-donate" href="https://pages.lls.org/tnt/team/yourway27/JScott#100-miles-for-mama-joanie-(josiah's-team-in-training-fundraiser)" target="_blank" rel="noopener">DONATE TO THE $50K GOAL →</a>
   <button type="button" class="button share-mission" data-share-mission>CAN’T DONATE? SHARE THE MISSION →</button>
 </section>
-</main>
+</main><div class="entry-overlay" id="entry-overlay" hidden><button class="entry-close" id="entry-close" type="button">CLOSE ×</button><div class="entry-overlay-inner" id="entry-overlay-inner"></div></div>
 
 <footer>
   <div><strong>DISTANCE PENDING</strong><span>Just the next step.</span></div>
@@ -285,7 +300,8 @@
 const b=document.querySelector('.menu'),n=document.querySelector('nav');b.onclick=()=>n.classList.toggle('open');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Number(n||0));
-const simpleMarkdown=t=>esc(t||'').replace(/^### (.*)$/gm,'<h4>$1</h4>').replace(/^## (.*)$/gm,'<h4>$1</h4>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+const simpleMarkdown=t=>esc(t||'').replace(/^### (.*)$/gm,'<h4>$1</h4>').replace(/^## (.*)$/gm,'<h3>$1</h3>').replace(/^# (.*)$/gm,'<h2>$1</h2>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+const slugify=s=>String(s||'entry').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 async function getJSON(path){
  const candidates=[path,path.replace('/content/','/')];
  let lastError;
@@ -345,12 +361,17 @@ async function loadCMS(){
   const [journal,training,fund]=await Promise.all([getJSON('/api/journal'),getJSON('/content/training.json'),getJSON('/content/fundraising.json')]);
   const feed=document.getElementById('journal-feed');
   const sorted=[...journal].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  feed.innerHTML=sorted.map((e,i)=>`<article class="training-week journal-week cms-journal-entry">
-    ${e.cover?`<img class="journal-cover" src="${esc(e.cover)}" alt="">`:''}
-    <div class="week-top"><div><span>TRAINING JOURNAL</span><h3>${esc(e.title)}</h3><small>${new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</small></div>${e.miles!==''&&e.miles!=null?`<strong class="week-mileage">${esc(e.miles)} MILES</strong>`:''}</div>
-    ${e.description?`<p class="journal-description">${esc(e.description)}</p>`:''}
-    <div class="journal-body"><p>${simpleMarkdown(e.body)}</p></div>
-  </article>`).join('') || '<p>No journal entries yet.</p>';
+  window.__dpJournal=sorted;
+  feed.innerHTML=sorted.map(e=>{const slug=e.slug||slugify(e.title);return `<article class="training-week journal-week cms-journal-entry" data-entry="${esc(slug)}">${e.cover?`<img class="journal-cover" src="${esc(e.cover)}" alt="">`:''}<div class="week-top"><div><span>TRAINING JOURNAL</span><h3>${esc(e.title)}</h3><small>${new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</small></div>${e.miles!==''&&e.miles!=null?`<strong class="week-mileage">${esc(e.miles)} MILES</strong>`:''}</div>${e.description?`<p class="journal-description">${esc(e.description)}</p>`:''}<div class="journal-body collapsed"><p>${simpleMarkdown(e.body)}</p>${e.youtube?`<p><a href="${esc(e.youtube)}" target="_blank" rel="noopener">WATCH THIS CHAPTER ON YOUTUBE ↗</a></p>`:''}</div><div class="journal-actions"><button class="journal-toggle" type="button">READ THE ENTRY →</button><button class="journal-link" type="button" data-copy-entry="${esc(slug)}">SHARE ENTRY →</button></div></article>`}).join('')||'<p>No journal entries yet.</p>';
+  const totalMiles=sorted.reduce((s,e)=>s+(Number(e.miles)||0),0);
+  document.getElementById('total-journal-miles').textContent=totalMiles.toFixed(totalMiles%1?2:0);
+  document.getElementById('journal-count').textContent=sorted.length;
+  document.getElementById('weeks-in-build').textContent=currentTrainingWeek();
+  document.getElementById('live-latest').textContent=sorted[0]?sorted[0].title.toUpperCase():'THE BUILD';
+  document.getElementById('since-title').textContent=sorted[0]?sorted[0].title:'The road keeps moving.';
+  document.getElementById('since-copy').textContent=sorted[0]?(sorted[0].description||'A new journal entry is live.'):'The first chapter is being written.';
+  document.getElementById('live-week').textContent=`WEEK ${training.week}`;
+  document.getElementById('live-phase').textContent=/pivot|injur|rehab/i.test((sorted[0]?.title||'')+' '+(sorted[0]?.description||''))?'PIVOT · REHAB':'ROAD TO 100';
   document.getElementById('planned-week-miles').textContent=training.weekly_miles;
   document.getElementById('planned-week-label').textContent=`Week ${training.week} planned`;
   document.getElementById('longest-run').textContent=training.longest_run;
@@ -362,12 +383,29 @@ async function loadCMS(){
   await syncTrainingMileageFromGoogleDoc(training);
   document.getElementById('fund-goal').textContent=Number(fund.goal)===50000?'$50K':money(fund.goal);
   document.getElementById('fund-raised').textContent=`${money(fund.amount_raised)} raised`;
+  const raised=Number(fund.amount_raised||0),fundedMiles=Math.min(100,Math.floor(raised/500));
+  document.getElementById('funded-miles').textContent=`${fundedMiles} OF 100 MILES FUNDED`;
+  document.getElementById('mile-grid').innerHTML=Array.from({length:100},(_,i)=>`<div class="mile-dot ${i<fundedMiles?'funded':''}"><span>${i+1}</span></div>`).join('');
+  document.getElementById('fund-road-note').textContent=`${money(raised)} raised · ${money(Math.max(0,Number(fund.goal||50000)-raised))} to go · every $500 funds one symbolic mile.`;
+
   document.querySelectorAll('a[href*="pages.lls.org"]').forEach(a=>{if(fund.fundraiser_url)a.href=fund.fundraiser_url});
  }catch(err){
   const feed=document.getElementById('journal-feed'); if(feed) feed.innerHTML='<p class="cms-loading">Journal is temporarily unavailable. The mission and site are still here.</p>';
  }
 }
 loadCMS();
+</script>
+
+<script>
+(()=>{
+ const overlay=document.getElementById('entry-overlay'),inner=document.getElementById('entry-overlay-inner');
+ const openEntry=(slug,push=true)=>{const e=(window.__dpJournal||[]).find(x=>(x.slug||slugify(x.title))===slug);if(!e)return;inner.innerHTML=`<div class="eyebrow">TRAINING JOURNAL · ${esc(e.date||'')}</div><h1>${esc(e.title)}</h1>${e.description?`<p class="journal-description">${esc(e.description)}</p>`:''}${e.cover?`<img class="journal-cover" src="${esc(e.cover)}" alt="">`:''}<div class="journal-body"><p>${simpleMarkdown(e.body)}</p></div>`;overlay.hidden=false;document.body.style.overflow='hidden';if(push)history.pushState({journal:slug},'',`/journal/${slug}`)};
+ const close=()=>{overlay.hidden=true;document.body.style.overflow='';if(location.pathname.startsWith('/journal/'))history.pushState({},'',location.origin+'/#journal')};
+ document.addEventListener('click',async ev=>{const t=ev.target.closest('.journal-toggle');if(t){openEntry(t.closest('.journal-week').dataset.entry);return}const s=ev.target.closest('[data-copy-entry]');if(s){const slug=s.dataset.copyEntry,url=`${location.origin}/journal/${slug}`;try{if(navigator.share)await navigator.share({title:'Distance Pending',url});else{await navigator.clipboard.writeText(url);s.textContent='LINK COPIED ✓';setTimeout(()=>s.textContent='SHARE ENTRY →',1800)}}catch(e){}}});
+ document.getElementById('entry-close').onclick=close;
+ document.getElementById('follow-form').addEventListener('submit',e=>{e.preventDefault();document.getElementById('follow-note').textContent='Email signup is designed — delivery connection is the next backend step.'});
+ const timer=setInterval(()=>{if(window.__dpJournal){clearInterval(timer);if(location.pathname.startsWith('/journal/'))openEntry(location.pathname.split('/').filter(Boolean).pop(),false)}},100);
+})();
 </script>
 
 <script>

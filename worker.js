@@ -33,7 +33,9 @@ async function getJournal() {
   const entries = await Promise.all(files.map(async file => {
     const r = await fetch(file.download_url, { cf: { cacheTtl: 60, cacheEverything: true } });
     if (!r.ok) throw new Error(`Journal file ${file.name} returned ${r.status}`);
-    return parseFrontmatter(await r.text());
+    const entry=parseFrontmatter(await r.text());
+    entry.slug=file.name.replace(/\.md$/i,'').replace(/^\d{4}-\d{2}-\d{2}-/,'');
+    return entry;
   }));
   return entries;
 }
@@ -60,6 +62,10 @@ export default {
       }
     }
 
+    if (url.pathname.startsWith("/journal/")) {
+      const root=new URL("/",url.origin);
+      return env.ASSETS.fetch(new Request(root,request));
+    }
     return env.ASSETS.fetch(request);
   }
 };
