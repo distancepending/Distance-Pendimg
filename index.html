@@ -471,7 +471,7 @@ async function syncTrainingMileageFromGoogleDoc(training){
 }
 async function loadCMS(){
  try{
-  const [journal,training,fund]=await Promise.all([getJSON('/api/journal'),getJSON('/content/training.json'),getJSON('/content/fundraising.json')]);
+  const [journal,training,fund]=await Promise.all([getJSON('/api/journal'),getJSON('/content/training.json'),getJSON('/api/fundraising')]);
   const feed=document.getElementById('journal-feed');
   const sorted=[...journal].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
   window.__dpJournal=sorted;
