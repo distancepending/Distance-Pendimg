@@ -66,8 +66,18 @@
   </nav>
 </header>
 <div class="top-progress" aria-label="Distance Pending live progress">
-<div class="top-progress-side"><span>MILES RUN</span><strong id="top-miles-run">79.19</strong><small>OF <b id="top-miles-plan">—</b> PLANNED MILES</small><div class="top-progress-track"><i id="top-miles-fill"></i></div></div>
-<div class="top-progress-side"><span>MONEY RAISED</span><strong id="top-money-raised">$0</strong><small>OF <b id="top-money-goal">$50,000</b> GOAL</small><div class="top-progress-track"><i id="top-money-fill"></i></div></div>
+  <div class="top-progress-side">
+    <span>MILES RUN</span>
+    <strong id="top-miles-run">79.19</strong>
+    <small>OF <b id="top-miles-plan">—</b> PLANNED MILES</small>
+    <div class="top-progress-track"><i id="top-miles-fill"></i></div>
+  </div>
+  <div class="top-progress-side">
+    <span>MONEY RAISED</span>
+    <strong id="top-money-raised">$0</strong>
+    <small>OF <b id="top-money-goal">$50,000</b> GOAL</small>
+    <div class="top-progress-track"><i id="top-money-fill"></i></div>
+  </div>
 </div>
 
 <main id="top">
@@ -378,16 +388,11 @@ function renderRoadTrainingTotals(text){
  const planned=document.getElementById('road-planned-total');
  const fill=document.getElementById('road-total-fill');
  const pct=document.getElementById('road-total-percent');
- if(t.actual>0){
-  actual.textContent=t.actual.toFixed(t.actual%1?2:0);
-  const tm=document.getElementById('top-miles-run'); if(tm)tm.textContent=t.actual.toFixed(t.actual%1?2:0);
- }
+ if(t.actual>0)actual.textContent=t.actual.toFixed(t.actual%1?2:0);
  if(t.planned>0){
   planned.textContent=t.planned.toLocaleString(undefined,{maximumFractionDigits:2});
-  const tp=document.getElementById('top-miles-plan'); if(tp)tp.textContent=t.planned.toLocaleString(undefined,{maximumFractionDigits:2});
   const value=Math.min(100,(t.actual/t.planned)*100);
   fill.style.width=`${value}%`;
-  const tf=document.getElementById('top-miles-fill'); if(tf)tf.style.width=`${value}%`;
   pct.textContent=`${value.toFixed(1)}% OF PLANNED MILEAGE COMPLETE`;
  }else{
   planned.textContent='—';
@@ -439,10 +444,6 @@ async function loadCMS(){
   document.getElementById('fund-goal').textContent=Number(fund.goal)===50000?'$50K':money(fund.goal);
   document.getElementById('fund-raised').textContent=`${money(fund.amount_raised)} raised`;
   const raised=Number(fund.amount_raised||0),fundedMiles=Math.min(100,Math.floor(raised/500));
-  const tr=document.getElementById('top-money-raised'); if(tr)tr.textContent=money(raised);
-  const goal=Number(fund.goal||50000);
-  const tg=document.getElementById('top-money-goal'); if(tg)tg.textContent=money(goal);
-  const tmf=document.getElementById('top-money-fill'); if(tmf)tmf.style.width=`${Math.min(100,(raised/goal)*100)}%`;
   document.getElementById('funded-miles').textContent=`${fundedMiles} OF 100 MILES FUNDED`;
   document.getElementById('mile-grid').innerHTML=Array.from({length:100},(_,i)=>`<div class="mile-dot ${i<fundedMiles?'funded':''}"><span>${i+1}</span></div>`).join('');
   document.getElementById('fund-road-note').textContent=`${money(raised)} raised · ${money(Math.max(0,Number(fund.goal||50000)-raised))} to go · every $500 funds one symbolic mile.`;
@@ -521,6 +522,45 @@ loadCMS();
       }
     });
   });
+})();
+</script>
+
+
+<script>
+(()=>{
+  function syncTopCounters(){
+    const roadActual=document.getElementById('road-actual-total');
+    const roadPlanned=document.getElementById('road-planned-total');
+    const fundRaised=document.getElementById('fund-raised');
+    const fundGoal=document.getElementById('fund-goal');
+
+    if(roadActual && roadActual.textContent.trim()){
+      document.getElementById('top-miles-run').textContent=roadActual.textContent.trim();
+    }
+    if(roadPlanned && /^[\d,.]+$/.test(roadPlanned.textContent.trim())){
+      const planned=roadPlanned.textContent.trim();
+      document.getElementById('top-miles-plan').textContent=planned;
+      const a=parseFloat((roadActual?.textContent||'0').replace(/,/g,''));
+      const p=parseFloat(planned.replace(/,/g,''));
+      if(p>0)document.getElementById('top-miles-fill').style.width=`${Math.min(100,a/p*100)}%`;
+    }
+
+    if(fundRaised){
+      const txt=fundRaised.textContent.trim();
+      const amount=(txt.match(/\$[\d,.]+/)||[])[0];
+      if(amount)document.getElementById('top-money-raised').textContent=amount;
+    }
+    if(fundGoal){
+      const goalTxt=fundGoal.textContent.trim();
+      const goal=(goalTxt.match(/\$[\d,.]+/)||[])[0];
+      if(goal)document.getElementById('top-money-goal').textContent=goal;
+    }
+    const raised=parseFloat(document.getElementById('top-money-raised').textContent.replace(/[$,]/g,''))||0;
+    const goal=parseFloat(document.getElementById('top-money-goal').textContent.replace(/[$,]/g,''))||50000;
+    document.getElementById('top-money-fill').style.width=`${Math.min(100,raised/goal*100)}%`;
+  }
+  syncTopCounters();
+  setInterval(syncTopCounters,750);
 })();
 </script>
 
