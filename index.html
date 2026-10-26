@@ -48,6 +48,13 @@
 .road-total-meta{display:flex;justify-content:space-between;gap:15px;margin-top:9px;font-size:10px;font-weight:800;letter-spacing:.08em}
 @media(max-width:600px){.road-total-meta{flex-direction:column;gap:4px}}
 </style>
+<style>
+.top-progress{display:grid;grid-template-columns:1fr 1fr;background:#111;color:#f4efe5}
+.top-progress-side{padding:20px 5vw 18px}.top-progress-side+.top-progress-side{border-left:1px solid rgba(244,239,229,.28)}
+.top-progress-side>span{display:block;font-size:10px;letter-spacing:.14em;opacity:.65;font-weight:700}.top-progress-side>strong{display:block;font-size:clamp(28px,6vw,48px);line-height:1;margin:8px 0 7px}
+.top-progress-side small{display:block;font-size:9px;letter-spacing:.08em;font-weight:700;opacity:.8}.top-progress-track{height:5px;border:1px solid rgba(244,239,229,.55);margin-top:12px;overflow:hidden}.top-progress-track i{display:block;height:100%;width:0;background:#f4efe5;transition:width .7s ease}
+@media(max-width:520px){.top-progress-side{padding:17px 18px 15px}.top-progress-side>strong{font-size:31px}.top-progress-side small{font-size:8px}}
+</style>
 </head>
 <body>
 <header>
@@ -58,7 +65,10 @@
     <a href="#journey">The Journey</a><a href="#community">Community</a><a href="#about">Distance Pending</a>
   </nav>
 </header>
-<div class="live-strip"><div><small>RIGHT NOW</small><strong id="live-phase">ROAD TO 100</strong></div><div><small>CURRENT WEEK</small><strong id="live-week">WEEK 3</strong></div><div><small>NEXT RACE</small><strong>DAYTONA 100 · DEC 2027</strong></div><div><small>LATEST</small><strong id="live-latest">LOADING…</strong></div></div>
+<div class="top-progress" aria-label="Distance Pending live progress">
+<div class="top-progress-side"><span>MILES RUN</span><strong id="top-miles-run">79.19</strong><small>OF <b id="top-miles-plan">—</b> PLANNED MILES</small><div class="top-progress-track"><i id="top-miles-fill"></i></div></div>
+<div class="top-progress-side"><span>MONEY RAISED</span><strong id="top-money-raised">$0</strong><small>OF <b id="top-money-goal">$50,000</b> GOAL</small><div class="top-progress-track"><i id="top-money-fill"></i></div></div>
+</div>
 
 <main id="top">
 <section class="hero v9-hero">
@@ -368,11 +378,16 @@ function renderRoadTrainingTotals(text){
  const planned=document.getElementById('road-planned-total');
  const fill=document.getElementById('road-total-fill');
  const pct=document.getElementById('road-total-percent');
- if(t.actual>0)actual.textContent=t.actual.toFixed(t.actual%1?2:0);
+ if(t.actual>0){
+  actual.textContent=t.actual.toFixed(t.actual%1?2:0);
+  const tm=document.getElementById('top-miles-run'); if(tm)tm.textContent=t.actual.toFixed(t.actual%1?2:0);
+ }
  if(t.planned>0){
   planned.textContent=t.planned.toLocaleString(undefined,{maximumFractionDigits:2});
+  const tp=document.getElementById('top-miles-plan'); if(tp)tp.textContent=t.planned.toLocaleString(undefined,{maximumFractionDigits:2});
   const value=Math.min(100,(t.actual/t.planned)*100);
   fill.style.width=`${value}%`;
+  const tf=document.getElementById('top-miles-fill'); if(tf)tf.style.width=`${value}%`;
   pct.textContent=`${value.toFixed(1)}% OF PLANNED MILEAGE COMPLETE`;
  }else{
   planned.textContent='—';
@@ -424,6 +439,10 @@ async function loadCMS(){
   document.getElementById('fund-goal').textContent=Number(fund.goal)===50000?'$50K':money(fund.goal);
   document.getElementById('fund-raised').textContent=`${money(fund.amount_raised)} raised`;
   const raised=Number(fund.amount_raised||0),fundedMiles=Math.min(100,Math.floor(raised/500));
+  const tr=document.getElementById('top-money-raised'); if(tr)tr.textContent=money(raised);
+  const goal=Number(fund.goal||50000);
+  const tg=document.getElementById('top-money-goal'); if(tg)tg.textContent=money(goal);
+  const tmf=document.getElementById('top-money-fill'); if(tmf)tmf.style.width=`${Math.min(100,(raised/goal)*100)}%`;
   document.getElementById('funded-miles').textContent=`${fundedMiles} OF 100 MILES FUNDED`;
   document.getElementById('mile-grid').innerHTML=Array.from({length:100},(_,i)=>`<div class="mile-dot ${i<fundedMiles?'funded':''}"><span>${i+1}</span></div>`).join('');
   document.getElementById('fund-road-note').textContent=`${money(raised)} raised · ${money(Math.max(0,Number(fund.goal||50000)-raised))} to go · every $500 funds one symbolic mile.`;
