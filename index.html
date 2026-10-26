@@ -1204,4 +1204,19 @@ loadCMS();
 })();
 </script>
 
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const fixFundGoal=()=>{
+    const el=document.getElementById('top-money-goal');
+    if(el && (el.textContent.trim()==='$50' || el.textContent.trim()==='50')) {
+      el.textContent='$50,000';
+    }
+  };
+  fixFundGoal();
+  setTimeout(fixFundGoal,500);
+  setTimeout(fixFundGoal,1500);
+});
+</script>
+
 </body></html>
