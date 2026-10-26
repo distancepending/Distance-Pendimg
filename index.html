@@ -353,13 +353,27 @@ function roadTrainingTotals(text){
  const weekStarts=[...normalized.matchAll(/(?:^|\n)\s*WEEK\s+(\d+)\b/gi)];
  let planned=0,actual=0;
  weekStarts.forEach((m,i)=>{
-  const start=m.index+(m[0].startsWith('\n')?1:0);
-  const end=i+1<weekStarts.length?weekStarts[i+1].index:normalized.length;
-  const block=normalized.slice(start,end);
-  const p=fieldNumber(block,'PLANNED');
-  const a=fieldNumber(block,'ACTUAL');
-  if(p!=null)planned+=p;
-  if(a!=null)actual+=a;
+   const start=m.index+(m[0].startsWith('\n')?1:0);
+   const end=i+1<weekStarts.length?weekStarts[i+1].index:normalized.length;
+   const block=normalized.slice(start,end);
+   const firstLine=(block.split('\n')[0]||'').trim();
+
+   // Planned mileage can be an explicit WEEKLY PROGRESS field OR in the week heading.
+   let p=fieldNumber(block,'PLANNED');
+   if(p==null){
+     let hm=firstLine.match(/(?:—|-|:)\s*(\d+(?:\.\d+)?)\s*(?:MILES?|MI)\b/i);
+     if(!hm) hm=firstLine.match(/\b(\d+(?:\.\d+)?)\s*(?:MILES?|MI)\b/i);
+     if(hm) p=Number(hm[1]);
+   }
+   // Fallback: a line explicitly describing the weekly total/goal.
+   if(p==null){
+     const pm=block.match(/(?:WEEK(?:LY)?\s+(?:TOTAL|MILEAGE|GOAL)|TOTAL\s+(?:MILES?|MILEAGE)|MILEAGE\s+GOAL)\D{0,20}(\d+(?:\.\d+)?)/i);
+     if(pm) p=Number(pm[1]);
+   }
+
+   const a=fieldNumber(block,'ACTUAL');
+   if(Number.isFinite(p)) planned+=p;
+   if(Number.isFinite(a)) actual+=a;
  });
  return {planned,actual};
 }
