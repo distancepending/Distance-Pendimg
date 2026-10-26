@@ -83,27 +83,227 @@
 
 
 <style>
-/* DISTANCE PENDING — DESKTOP EDITORIAL PASS */
-@media (min-width:1000px){
-body{overflow-x:hidden}
-header{padding-left:max(32px,calc((100vw - 1380px)/2));padding-right:max(32px,calc((100vw - 1380px)/2))}
-main>.section,.hero,.mission-line{width:min(1380px,calc(100% - 80px));margin-left:auto;margin-right:auto;box-sizing:border-box}
-.top-progress{grid-template-columns:1fr 1fr;padding-left:max(0px,calc((100vw - 1380px)/2));padding-right:max(0px,calc((100vw - 1380px)/2))}.top-progress-side{padding:22px 36px 20px}
-.hero.v9-hero{min-height:min(780px,calc(100vh - 120px));display:grid;grid-template-columns:minmax(0,1.08fr) minmax(420px,.92fr);align-items:stretch;gap:0}.hero-copy{display:flex;flex-direction:column;justify-content:center;padding:70px clamp(36px,5vw,82px) 70px 0;min-width:0}.hero h1{font-size:clamp(76px,7.6vw,132px);line-height:.82;letter-spacing:-.055em;margin:18px 0 28px}.hero .dek{max-width:650px;font-size:20px;line-height:1.45}.hero-photo.v5-hero-photo{height:auto;min-height:650px;margin:0}.hero-photo.v5-hero-photo img{width:100%;height:100%;object-fit:cover}.hero .actions{max-width:720px}.mission-line{margin-top:0;margin-bottom:0}
-#mama.v9-mama{display:grid;grid-template-columns:minmax(330px,.72fr) minmax(0,1.28fr);column-gap:clamp(50px,6vw,100px);row-gap:42px;align-items:start;padding-top:100px;padding-bottom:100px}#mama .mama-v5-intro{grid-column:1;grid-row:1;position:sticky;top:110px;align-self:start}#mama .mama-v5-intro h2{font-size:clamp(72px,7vw,116px);line-height:.84}#mama .mama-v5-photo{grid-column:2!important;grid-row:1!important;order:unset!important;margin:0;height:clamp(560px,62vw,820px)}#mama .mama-v5-photo img{width:100%;height:100%;object-fit:cover}#mama .joanie-album{grid-column:1/-1!important;grid-row:2!important;order:unset!important;margin:10px 0 0}#mama .joanie-album-track{gap:14px;padding-bottom:16px}#mama .joanie-album figure{flex:0 0 clamp(300px,28vw,410px);height:420px}#mama .joanie-video{grid-column:1/-1!important;grid-row:3!important;order:unset!important;width:min(100%,1050px);justify-self:center;margin:10px auto 16px}#mama .joanie-video video{width:100%;max-height:680px;aspect-ratio:16/9;object-fit:contain}#mama .suzanna-quote{grid-column:1/-1!important;grid-row:4!important;order:unset!important;width:min(900px,100%);justify-self:center;margin-top:30px}
-#mission.v9-mission{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);gap:clamp(55px,7vw,110px);align-items:start;padding-top:110px;padding-bottom:110px}#mission .mission-goal h2{font-size:clamp(78px,7.5vw,124px);line-height:.83}#mission .org-grid{display:grid;grid-template-columns:1fr;gap:18px;align-self:start}#mission .tier-grid{grid-template-columns:repeat(3,1fr)}
-#race.v9-race{padding-top:110px;padding-bottom:110px}#race>h2{font-size:clamp(86px,9vw,145px);line-height:.82}#race .race-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(420px,.9fr);gap:70px;align-items:start}
-#journey.journey-section{padding-top:110px;padding-bottom:110px}#journey .journey-head{display:grid;grid-template-columns:1.4fr .6fr;align-items:end;gap:60px}#journey .journey-head h2{font-size:clamp(82px,8vw,135px);line-height:.84}#journey .road-total-box{padding:34px 38px;margin-top:45px}#journey .training-snapshot{grid-template-columns:repeat(4,1fr)}#journey .current-plan,#journey .journal-chapter{max-width:1180px;margin-left:auto;margin-right:auto}#journey .journey-media{display:grid;grid-template-columns:1.25fr .75fr;gap:30px;align-items:stretch}
-#community.community-section{padding-top:110px;padding-bottom:110px}#community .community-intro{display:grid;grid-template-columns:1.1fr .9fr;column-gap:70px;align-items:end}#community .community-intro h2{font-size:clamp(80px,8vw,130px);line-height:.84}#community .community-grid{grid-template-columns:repeat(3,1fr);gap:18px}
-#about.v9-about{padding-top:120px;padding-bottom:120px}#about>h2{max-width:1050px;font-size:clamp(72px,7vw,112px);line-height:.9}#about .columns{max-width:1000px;display:grid;grid-template-columns:1fr 1fr;gap:70px}#about blockquote{max-width:1100px}.final-cta{padding:120px max(40px,calc((100vw - 1380px)/2))}.final-cta h2{font-size:clamp(82px,9vw,145px);line-height:.82}footer{padding-left:max(40px,calc((100vw - 1380px)/2));padding-right:max(40px,calc((100vw - 1380px)/2))}
+/* DESKTOP ONLY — mobile/tablet presentation remains untouched */
+@media (min-width: 1000px) {
+  :root { --dp-desktop: 1180px; }
+
+  body { overflow-x:hidden; }
+  header {
+    width:min(var(--dp-desktop), calc(100% - 64px));
+    margin:0 auto;
+    padding-left:0 !important; padding-right:0 !important;
+    box-sizing:border-box;
+  }
+  header nav { gap:24px; }
+
+  .top-progress {
+    width:min(var(--dp-desktop), calc(100% - 64px));
+    margin:0 auto;
+  }
+
+  main > .section,
+  .hero,
+  .mission-line {
+    width:min(var(--dp-desktop), calc(100% - 64px)) !important;
+    max-width:var(--dp-desktop) !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box;
+  }
+
+  /* Hero: balanced and contained */
+  .hero.v9-hero {
+    display:grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    min-height:680px;
+    overflow:hidden;
+  }
+  .hero-copy {
+    padding:54px 54px 54px 0 !important;
+    display:flex; flex-direction:column; justify-content:center;
+    min-width:0;
+  }
+  .hero h1 {
+    font-size:clamp(76px,6.5vw,112px) !important;
+    line-height:.82 !important;
+    letter-spacing:-.055em;
+    margin:16px 0 30px !important;
+  }
+  .hero .dek { max-width:540px; font-size:18px; line-height:1.5; }
+  .hero-photo.v5-hero-photo {
+    margin:0 !important;
+    height:680px !important;
+    min-height:0 !important;
+    overflow:hidden;
+  }
+  .hero-photo.v5-hero-photo img { width:100%; height:100%; object-fit:cover; }
+
+  /* Mama: NO sticky/floating text. Everything gets its own row. */
+  #mama.v9-mama {
+    display:block !important;
+    padding-top:88px !important;
+    padding-bottom:88px !important;
+    overflow:hidden;
+  }
+  #mama .mama-v5-intro {
+    position:static !important;
+    width:min(820px,100%);
+    margin:0 0 42px !important;
+  }
+  #mama .mama-v5-intro h2 {
+    font-size:clamp(72px,7vw,108px) !important;
+    line-height:.84 !important;
+    margin:12px 0 20px !important;
+  }
+  #mama .mama-v5-photo {
+    width:min(900px,100%) !important;
+    height:auto !important;
+    margin:0 auto 56px !important;
+  }
+  #mama .mama-v5-photo img {
+    display:block; width:100%; height:auto !important; max-height:760px;
+    object-fit:contain !important; background:#111;
+  }
+  #mama .joanie-album {
+    width:100% !important; margin:0 0 56px !important;
+  }
+  #mama .joanie-album-track { gap:16px; }
+  #mama .joanie-album figure {
+    flex:0 0 360px !important;
+    height:420px !important;
+  }
+  #mama .joanie-video {
+    width:min(900px,100%) !important;
+    margin:0 auto 64px !important;
+  }
+  #mama .joanie-video video {
+    width:100%; height:auto !important; max-height:680px !important;
+    object-fit:contain;
+  }
+  #mama .suzanna-quote {
+    width:min(820px,100%) !important;
+    margin:0 auto !important;
+  }
+
+  /* Mission: equal visual weight; no giant empty right column */
+  #mission.v9-mission {
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:0 !important;
+    align-items:stretch !important;
+    padding:0 !important;
+    overflow:hidden;
+  }
+  #mission .mission-goal {
+    padding:64px 58px !important;
+    box-sizing:border-box;
+  }
+  #mission .mission-goal h2 {
+    font-size:clamp(68px,5.8vw,96px) !important;
+    line-height:.84 !important;
+  }
+  #mission .org-grid {
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    align-content:stretch;
+    gap:0 !important;
+  }
+  #mission .org-card {
+    min-height:50%;
+    padding:52px !important;
+    box-sizing:border-box;
+  }
+  #mission .tier-grid { grid-template-columns:repeat(3,1fr) !important; }
+
+  /* Race */
+  #race.v9-race { padding-top:88px !important; padding-bottom:88px !important; overflow:hidden; }
+  #race > h2 { font-size:clamp(78px,7vw,112px) !important; line-height:.84 !important; }
+  #race .race-hero {
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:46px !important;
+    align-items:start;
+  }
+  #race .race-stats { min-width:0; }
+  #race .race-stats strong { font-size:clamp(52px,5vw,78px) !important; }
+
+  /* Journey: eliminate tall black voids under images */
+  #journey.journey-section { padding-top:88px !important; padding-bottom:88px !important; }
+  #journey .journey-head {
+    display:flex !important; justify-content:space-between; align-items:end; gap:50px;
+  }
+  #journey .journey-head h2 { font-size:clamp(72px,7vw,110px) !important; line-height:.86 !important; }
+  #journey .journey-photos {
+    display:grid !important; grid-template-columns:1fr 1fr !important; gap:14px;
+    align-items:start;
+  }
+  #journey .journey-photos figure {
+    height:auto !important; min-height:0 !important; margin:0 !important;
+    background:transparent !important;
+  }
+  #journey .journey-photos img {
+    width:100%; height:360px !important; object-fit:cover; display:block;
+  }
+  #journey .journey-media {
+    display:grid !important;
+    grid-template-columns:1.15fr .85fr !important;
+    gap:28px !important;
+    align-items:start !important;
+  }
+  #journey .instagram-road { align-self:start; }
+
+  /* Community */
+  #community.community-section { padding-top:88px !important; padding-bottom:88px !important; }
+  #community .community-grid { display:grid !important; grid-template-columns:repeat(3,1fr) !important; }
+  #community .community-card { min-width:0; padding:42px !important; }
+  #community .community-card h3 { font-size:clamp(38px,3.4vw,54px) !important; line-height:.92 !important; }
+
+  /* About / final */
+  #about.v9-about { padding-top:96px !important; padding-bottom:96px !important; }
+  #about > h2 { max-width:980px; font-size:clamp(66px,6vw,98px) !important; line-height:.9 !important; }
+  .final-cta { padding-top:100px !important; padding-bottom:100px !important; }
+
+  /* Desktop doesn't need the mobile sticky donation bar */
+  .mobile-donate { display:none !important; }
 }
-@media (min-width:1000px) and (max-width:1220px){main>.section,.hero,.mission-line{width:calc(100% - 56px)}.hero.v9-hero{grid-template-columns:1fr .9fr}.hero h1{font-size:clamp(70px,8vw,100px)}#mama.v9-mama{column-gap:48px}#mission.v9-mission{gap:48px}}
+
+@media (min-width: 1000px) and (max-width: 1180px) {
+  :root { --dp-desktop: 1040px; }
+  #mission .mission-goal { padding:48px 42px !important; }
+  #mission .org-card { padding:40px !important; }
+  #community .community-card { padding:32px !important; }
+}
+</style>
+
+
+<style>
+/* Distance Pending header mark */
+.dp-header-mark{
+  display:inline-block;
+  width:30px;
+  height:30px;
+  object-fit:contain;
+  flex:0 0 auto;
+}
+header .brand,
+header .logo,
+.dp-brand-with-mark{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:11px !important;
+}
+@media (max-width:700px){
+  .dp-header-mark{width:25px;height:25px}
+  header .brand,
+  header .logo,
+  .dp-brand-with-mark{gap:9px !important}
+}
 </style>
 
 </head>
 <body>
 <header>
-  <a class="brand" href="#top">DISTANCE PENDING</a>
+  <a class="brand" href="#top"><img class="dp-header-mark" src="/logo-original.png" alt="" aria-hidden="true"><span>DISTANCE PENDING</span></a>
   <button class="menu" aria-label="Toggle menu">MENU</button>
   <nav>
     <a href="#mama">Why Joanie</a><a href="#mission">The Mission</a><a href="#race">100 Miles</a>
