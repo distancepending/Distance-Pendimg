@@ -996,26 +996,80 @@ function trainingWeekBlock(text,week){
  const match=normalized.match(re);
  return match?match[0]:'';
 }
+function dpNormalizeTrainingText(text){
+ return String(text||'')
+  .replace(/\r/g,'')
+  .replace(/\u00a0/g,' ')
+  .replace(/[\t ]+/g,' ')
+  .replace(/ *\n */g,'\n');
+}
+function trainingWeekBlocks(text){
+ const normalized=dpNormalizeTrainingText(text);
+ const starts=[...normalized.matchAll(/(?:^|\n)\s*WEEK\s+(\d+)\b/gi)];
+ return starts.map((m,i)=>{
+  const begin=m.index+(m[0].startsWith('\n')?1:0);
+  const end=i+1<starts.length?starts[i+1].index:normalized.length;
+  return {week:Number(m[1]),block:normalized.slice(begin,end)};
+ });
+}
+function trainingWeekBlock(text,week){
+ const found=trainingWeekBlocks(text).find(x=>x.week===Number(week));
+ return found?found.block:'';
+}
+function dpProgressNumbers(block){
+ const normalized=dpNormalizeTrainingText(block);
+ const progressIndex=normalized.search(/(?:^|\n)\s*WEEKLY\s+PROGRESS\s*(?:\n|$)/i);
+ const section=progressIndex>=0?normalized.slice(progressIndex):normalized;
+ const lines=section.split('\n').map(x=>x.trim()).filter(Boolean);
+ const labels=['PLANNED MILES','ACTUAL MILES','VARIANCE','COMPLETION'];
+ const out={};
+ for(let i=0;i<lines.length;i++){
+  const upper=lines[i].toUpperCase().replace(/\s+/g,' ');
+  for(const label of labels){
+   if(upper===label || upper.startsWith(label+':') || upper.startsWith(label+' -') || upper.startsWith(label+' —')){
+    const inline=lines[i].match(/-?\d+(?:\.\d+)?/);
+    if(inline){out[label]=Number(inline[0]);continue;}
+    // Google Docs text export can put all four labels first and all four values after them.
+    // Prefer the value in the matching column when that table-style layout is present.
+    const labelPositions=labels.map(l=>lines.findIndex((v,idx)=>idx>=0 && v.toUpperCase().replace(/\s+/g,' ')===l));
+    if(labelPositions.every(x=>x>=0)){
+     const lastLabel=Math.max(...labelPositions);
+     const values=lines.slice(lastLabel+1).map(v=>v.match(/-?\d+(?:\.\d+)?/)).filter(Boolean).map(m=>Number(m[0]));
+     const col=labels.indexOf(label);
+     if(values.length>col){out[label]=values[col];continue;}
+    }
+    for(let j=i+1;j<Math.min(lines.length,i+8);j++){
+     if(labels.includes(lines[j].toUpperCase().replace(/\s+/g,' '))) continue;
+     const m=lines[j].match(/-?\d+(?:\.\d+)?/);
+     if(m){out[label]=Number(m[0]);break;}
+    }
+   }
+  }
+ }
+ return out;
+}
 function fieldNumber(block,label){
- const patterns=[
-  new RegExp(`${label}\\s*(?:MILES?)?\\s*[:–—-]?\\s*(\\d+(?:\\.\\d+)?)`,'i'),
-  new RegExp(`${label}[^\\d\\n]{0,30}(\\d+(?:\\.\\d+)?)`,'i')
- ];
- for(const re of patterns){const m=block.match(re);if(m)return Number(m[1]);}
- return null;
+ const key=String(label||'').toUpperCase().includes('ACTUAL')?'ACTUAL MILES':'PLANNED MILES';
+ const progress=dpProgressNumbers(block);
+ if(Number.isFinite(progress[key])) return progress[key];
+ const normalized=dpNormalizeTrainingText(block);
+ const re=new RegExp(`(?:^|\\n)\\s*${key.replace(' ','\\\\s+')}\\s*[:–—-]?\\s*(-?\\d+(?:\\.\\d+)?)`,'i');
+ const m=normalized.match(re);
+ return m?Number(m[1]):null;
 }
 function roadTrainingTotals(text){
- const normalized=String(text||'').replace(/\r/g,'').replace(/\u00a0/g,' ');
  let planned=0,actual=0;
- const starts=[...normalized.matchAll(/(?:^|\n)\s*WEEK\s+(\d+)\s*(?=\n)/gi)];
- starts.forEach((m,i)=>{
-   const begin=m.index+(m[0].startsWith('\n')?1:0);
-   const end=i+1<starts.length?starts[i+1].index:normalized.length;
-   const block=normalized.slice(begin,end);
-   const pm=block.match(/(?:^|\n)\s*(\d+(?:\.\d+)?)\s+PLANNED MILES\s*(?=\n)/i);
-   if(pm) planned+=Number(pm[1])||0;
-   const progress=block.match(/WEEKLY PROGRESS[\s\S]*?PLANNED MILES\s*\n\s*ACTUAL MILES\s*\n\s*VARIANCE\s*\n\s*COMPLETION\s*\n\s*(\d+(?:\.\d+)?)\s*\n\s*(\d+(?:\.\d+)?)/i);
-   if(progress) actual+=Number(progress[2])||0;
+ trainingWeekBlocks(text).forEach(({block})=>{
+  const progress=dpProgressNumbers(block);
+  let p=progress['PLANNED MILES'];
+  let a=progress['ACTUAL MILES'];
+  // Planned mileage also appears as "44 PLANNED MILES" in the week heading.
+  if(!Number.isFinite(p)){
+   const pm=block.match(/(?:^|\n)\s*(\d+(?:\.\d+)?)\s+PLANNED MILES\b/i);
+   if(pm)p=Number(pm[1]);
+  }
+  if(Number.isFinite(p))planned+=p;
+  if(Number.isFinite(a))actual+=a;
  });
  return {planned,actual};
 }
@@ -1025,7 +1079,8 @@ function renderRoadTrainingTotals(text){
  const planned=document.getElementById('road-planned-total');
  const fill=document.getElementById('road-total-fill');
  const pct=document.getElementById('road-total-percent');
- if(t.actual>0)actual.textContent=t.actual.toFixed(t.actual%1?2:0);
+ // Always replace stale fallback values when the Doc was successfully fetched.
+ actual.textContent=t.actual.toFixed(t.actual%1?2:0);
  if(t.planned>0){
   planned.textContent=t.planned.toLocaleString(undefined,{maximumFractionDigits:2});
   const value=Math.min(100,(t.actual/t.planned)*100);
@@ -1033,8 +1088,16 @@ function renderRoadTrainingTotals(text){
   pct.textContent=`${value.toFixed(1)}% OF PLANNED MILEAGE COMPLETE`;
  }else{
   planned.textContent='—';
+  fill.style.width='0%';
   pct.textContent='PLAN TOTAL UNAVAILABLE';
  }
+ // Keep the top-of-page mileage counter tied to the same Google Doc totals.
+ const topActual=document.getElementById('top-miles-run');
+ const topPlan=document.getElementById('top-miles-plan');
+ const topFill=document.getElementById('top-miles-fill');
+ if(topActual)topActual.textContent=t.actual.toFixed(t.actual%1?2:0);
+ if(topPlan)topPlan.textContent=t.planned>0?t.planned.toLocaleString(undefined,{maximumFractionDigits:2}):'—';
+ if(topFill)topFill.style.width=t.planned>0?`${Math.min(100,(t.actual/t.planned)*100)}%`:'0%';
 }
 async function syncTrainingMileageFromGoogleDoc(training){
  try{
