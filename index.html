@@ -984,7 +984,7 @@ async function getJSON(path){
  }
  throw lastError||new Error(path);
 }
-const TRAINING_PLAN_START = new Date('2026-10-12T12:00:00');
+const TRAINING_PLAN_START = new Date('2026-10-05T12:00:00');
 function currentTrainingWeek(){
  const now=new Date();
  const days=Math.floor((now-TRAINING_PLAN_START)/86400000);
@@ -1107,6 +1107,38 @@ function dpWeekDateInfo(block){
  const iso=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
  return {label:`${m[1]} ${m[2]} - ${m[3]} ${m[4]}, ${m[5]}`,date:iso};
 }
+function dpWeekSchedule(block){
+ const normalized=dpNormalizeTrainingText(block);
+ const beforeProgress=normalized.split(/\n\s*WEEKLY\s+PROGRESS\s*(?:\n|$)/i)[0]||'';
+ const lines=beforeProgress.split('\n').map(x=>x.trim()).filter(Boolean);
+ const doneIndex=lines.findIndex(v=>/^DONE$/i.test(v));
+ if(doneIndex<0)return [];
+ const days=new Set(['MON','TUE','WED','THU','FRI','SAT','SUN']);
+ const out=[];
+ for(let i=doneIndex+1;i<lines.length;){
+  const day=lines[i].toUpperCase();
+  if(!days.has(day)){i++;continue;}
+  const run=lines[i+1]||'';
+  const strength=lines[i+2]||'—';
+  const mark=lines[i+3]||'';
+  out.push({day,run,strength,status:/\[\s*y\s*\]/i.test(mark)?'Done':'Planned'});
+  i+=4;
+ }
+ return out;
+}
+function dpWeekHeadingPlanned(block){
+ const m=dpNormalizeTrainingText(block).match(/(?:^|\n)\s*(\d+(?:\.\d+)?)\s+PLANNED MILES\b/i);
+ return m?Number(m[1]):null;
+}
+function dpLongestPlannedRun(schedule){
+ let max=0;
+ (schedule||[]).forEach(x=>{
+  const left=String(x.run||'').split('→')[0];
+  const m=left.match(/(\d+(?:\.\d+)?)\s*mi\b/i);
+  if(m)max=Math.max(max,Number(m[1]));
+ });
+ return max||null;
+}
 function dpWeekNotes(block){
  const normalized=dpNormalizeTrainingText(block);
  const progressIndex=normalized.search(/(?:^|\n)\s*WEEKLY\s+PROGRESS\s*(?:\n|$)/i);
@@ -1192,15 +1224,35 @@ async function loadCMS(){
   window.__dpJournal=sorted;
   feed.innerHTML=sorted.map(e=>{const slug=e.slug||slugify(e.title);return `<article class="training-week journal-week cms-journal-entry" data-entry="${esc(slug)}">${e.cover?`<img class="journal-cover" src="${esc(e.cover)}" alt="">`:''}<div class="week-top"><div><span>TRAINING JOURNAL</span><h3>${esc(e.title)}</h3><small>${esc(e.date_label||new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}))}</small></div>${e.miles!==''&&e.miles!=null?`<strong class="week-mileage">${esc(e.miles)} MILES</strong>`:''}</div>${e.description?`<p class="journal-description">${esc(e.description)}</p>`:''}<div class="journal-body collapsed"><p>${simpleMarkdown(e.body)}</p>${e.youtube?`<p><a href="${esc(e.youtube)}" target="_blank" rel="noopener">WATCH THIS CHAPTER ON YOUTUBE ↗</a></p>`:''}</div><div class="journal-actions"><button class="journal-toggle" type="button">READ THE ENTRY →</button><button class="journal-link" type="button" data-copy-entry="${esc(slug)}">SHARE ENTRY →</button></div></article>`}).join('')||'<p>No journal entries yet.</p>';
   const totalMiles=sorted.reduce((s,e)=>s+(Number(e.miles)||0),0);
-document.getElementById('planned-week-miles').textContent=training.weekly_miles;
-  document.getElementById('planned-week-label').textContent=`Week ${training.week} planned`;
-  document.getElementById('longest-run').textContent=training.longest_run;
-  document.getElementById('current-week-label').textContent=`THIS WEEK · WEEK ${training.week}`;
-  document.getElementById('current-week-dates').textContent=training.dates;
-  document.getElementById('current-week-mileage').textContent=`${training.weekly_miles} PLANNED MILES`;
-  document.getElementById('next-step').textContent=training.next_step;
-  document.getElementById('current-schedule').innerHTML=(training.schedule||[]).map(x=>`<div class="schedule-row"><span>${esc(x.day)}</span><strong>${esc(x.run)}</strong><em>${esc(x.strength||'—')}</em><b>${esc(x.status||'Planned')}</b></div>`).join('');
-  await syncTrainingMileageFromGoogleDoc(training,trainingText);
+// Current-week card is driven by the Google Doc too, so its week/date/schedule cannot drift behind.
+  let displayWeek=Number(training.week), displayMiles=training.weekly_miles, displayDates=training.dates;
+  let displaySchedule=training.schedule||[], displayLongest=training.longest_run;
+  if(trainingText){
+   const activeWeek=currentTrainingWeek();
+   const activeBlock=trainingWeekBlock(trainingText,activeWeek);
+   if(activeBlock){
+    displayWeek=activeWeek;
+    const dateInfo=dpWeekDateInfo(activeBlock);
+    if(dateInfo.label)displayDates=dateInfo.label.replace(' - ','–');
+    const headingPlanned=dpWeekHeadingPlanned(activeBlock);
+    if(headingPlanned!=null)displayMiles=headingPlanned;
+    const docSchedule=dpWeekSchedule(activeBlock);
+    if(docSchedule.length){
+     displaySchedule=docSchedule;
+     const longest=dpLongestPlannedRun(docSchedule);
+     if(longest!=null)displayLongest=longest;
+    }
+   }
+  }
+  document.getElementById('planned-week-miles').textContent=displayMiles;
+  document.getElementById('planned-week-label').textContent=`Week ${displayWeek} planned`;
+  document.getElementById('longest-run').textContent=displayLongest;
+  document.getElementById('current-week-label').textContent=`THIS WEEK · WEEK ${displayWeek}`;
+  document.getElementById('current-week-dates').textContent=displayDates;
+  document.getElementById('current-week-mileage').textContent=`${displayMiles} PLANNED MILES`;
+  document.getElementById('next-step').textContent=`Next up: ${displayMiles} planned miles.`;
+  document.getElementById('current-schedule').innerHTML=displaySchedule.map(x=>`<div class="schedule-row"><span>${esc(x.day)}</span><strong>${esc(x.run)}</strong><em>${esc(x.strength||'—')}</em><b>${esc(x.status||'Planned')}</b></div>`).join('');
+  await syncTrainingMileageFromGoogleDoc({...training,week:displayWeek},trainingText);
   document.getElementById('fund-goal').textContent=Number(fund.goal)===50000?'$50K':money(fund.goal);
   document.getElementById('fund-raised').textContent=`${money(fund.amount_raised)} raised`;
   const raised=Number(fund.amount_raised||0),fundedMiles=Math.min(100,Math.floor(raised/500));
