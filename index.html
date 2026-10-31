@@ -842,8 +842,8 @@ header .logo,
   <div class="road-total-meta"><span id="road-total-percent">CALCULATING PLAN…</span><span>DAYTONA 100 · DEC 2027</span></div>
 </div>
   <div class="training-snapshot">
-    <div><strong id="week-1-actual">38.19</strong><span>Week 1 actual</span></div>
-    <div><strong id="week-2-actual">41</strong><span>Week 2 actual</span></div>
+    <div><strong id="recent-week-1-actual">38.19</strong><span id="recent-week-1-label">Week 1 actual</span></div>
+    <div><strong id="recent-week-2-actual">41</strong><span id="recent-week-2-label">Week 2 actual</span></div>
     <div><strong id="planned-week-miles">44</strong><span id="planned-week-label">Week 3 planned</span></div>
     <div><strong id="longest-run">12</strong><span>Longest planned run this week</span></div>
   </div>
@@ -1190,21 +1190,28 @@ async function syncTrainingMileageFromGoogleDoc(training,text=null){
  try{
   text=text||await getTrainingPlanText();
   renderRoadTrainingTotals(text);
-  const activeWeek=currentTrainingWeek();
-  const weeksToUpdate=new Set([1,2,activeWeek,Number(training.week)]);
-  weeksToUpdate.forEach(week=>{
+  const activeWeek=Number(training.week)||currentTrainingWeek();
+  // Snapshot cards always roll with the plan: the two weeks immediately before
+  // the current week, followed by current-week planned mileage and longest run.
+  [activeWeek-2,activeWeek-1].forEach((week,index)=>{
+   if(week<1)return;
    const block=trainingWeekBlock(text,week);
    if(!block)return;
    const actual=fieldNumber(block,'ACTUAL');
-   const planned=fieldNumber(block,'PLANNED');
-   const actualEl=document.getElementById(`week-${week}-actual`);
-   if(actualEl&&actual!=null)actualEl.textContent=actual;
-   if(week===Number(training.week)&&planned!=null){
+   const valueEl=document.getElementById(`recent-week-${index+1}-actual`);
+   const labelEl=document.getElementById(`recent-week-${index+1}-label`);
+   if(valueEl) valueEl.textContent=actual!=null?actual:'—';
+   if(labelEl) labelEl.textContent=`Week ${week} actual`;
+  });
+  const currentBlock=trainingWeekBlock(text,activeWeek);
+  if(currentBlock){
+   const planned=fieldNumber(currentBlock,'PLANNED');
+   if(planned!=null){
     document.getElementById('planned-week-miles').textContent=planned;
     document.getElementById('current-week-mileage').textContent=`${planned} PLANNED MILES`;
     document.getElementById('next-step').textContent=`Next up: ${planned} planned miles.`;
    }
-  });
+  }
  }catch(err){console.warn('Google Doc mileage sync unavailable; using site fallback data.',err);}
 }
 async function loadCMS(){
