@@ -1019,32 +1019,30 @@ function trainingWeekBlock(text,week){
 function dpProgressNumbers(block){
  const normalized=dpNormalizeTrainingText(block);
  const progressIndex=normalized.search(/(?:^|\n)\s*WEEKLY\s+PROGRESS\s*(?:\n|$)/i);
- const section=progressIndex>=0?normalized.slice(progressIndex):normalized;
- const lines=section.split('\n').map(x=>x.trim()).filter(Boolean);
+ if(progressIndex<0)return {};
+ const section=normalized.slice(progressIndex);
+ // IMPORTANT: preserve blank lines. Google Docs exports this table as four
+ // label rows followed by four value rows. Blank ACTUAL/VARIANCE cells in
+ // future weeks must stay blank; filtering them out makes later numbers in
+ // notes/rehab text slide into the ACTUAL column.
+ const lines=section.split('\n').map(x=>x.trim());
  const labels=['PLANNED MILES','ACTUAL MILES','VARIANCE','COMPLETION'];
  const out={};
- for(let i=0;i<lines.length;i++){
-  const upper=lines[i].toUpperCase().replace(/\s+/g,' ');
-  for(const label of labels){
-   if(upper===label || upper.startsWith(label+':') || upper.startsWith(label+' -') || upper.startsWith(label+' —')){
-    const inline=lines[i].match(/-?\d+(?:\.\d+)?/);
-    if(inline){out[label]=Number(inline[0]);continue;}
-    // Google Docs text export can put all four labels first and all four values after them.
-    // Prefer the value in the matching column when that table-style layout is present.
-    const labelPositions=labels.map(l=>lines.findIndex((v,idx)=>idx>=0 && v.toUpperCase().replace(/\s+/g,' ')===l));
-    if(labelPositions.every(x=>x>=0)){
-     const lastLabel=Math.max(...labelPositions);
-     const values=lines.slice(lastLabel+1).map(v=>v.match(/-?\d+(?:\.\d+)?/)).filter(Boolean).map(m=>Number(m[0]));
-     const col=labels.indexOf(label);
-     if(values.length>col){out[label]=values[col];continue;}
-    }
-    for(let j=i+1;j<Math.min(lines.length,i+8);j++){
-     if(labels.includes(lines[j].toUpperCase().replace(/\s+/g,' '))) continue;
-     const m=lines[j].match(/-?\d+(?:\.\d+)?/);
-     if(m){out[label]=Number(m[0]);break;}
-    }
-   }
-  }
+ const positions=labels.map(label=>lines.findIndex(v=>v.toUpperCase().replace(/\s+/g,' ')===label));
+ if(positions.every(x=>x>=0)){
+  const lastLabel=Math.max(...positions);
+  labels.forEach((label,col)=>{
+   const valueLine=lines[lastLabel+1+col]??'';
+   const m=valueLine.match(/-?\d+(?:\.\d+)?/);
+   if(m)out[label]=Number(m[0]);
+  });
+  return out;
+ }
+ // Fallback for an inline "ACTUAL MILES: 12.3" style document.
+ for(const label of labels){
+  const re=new RegExp(`(?:^|\\n)\\s*${label.replace(/ /g,'\\s+')}\\s*[:–—-]\\s*(-?\\d+(?:\\.\\d+)?)`,'i');
+  const m=section.match(re);
+  if(m)out[label]=Number(m[1]);
  }
  return out;
 }
