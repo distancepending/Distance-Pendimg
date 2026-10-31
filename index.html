@@ -1097,11 +1097,66 @@ function renderRoadTrainingTotals(text){
  if(topPlan)topPlan.textContent=t.planned>0?t.planned.toLocaleString(undefined,{maximumFractionDigits:2}):'—';
  if(topFill)topFill.style.width=t.planned>0?`${Math.min(100,(t.actual/t.planned)*100)}%`:'0%';
 }
-async function syncTrainingMileageFromGoogleDoc(training){
+function dpWeekDateInfo(block){
+ const normalized=dpNormalizeTrainingText(block);
+ const m=normalized.match(/(?:^|\n)\s*([A-Z][a-z]{2})\s+(\d{1,2})\s*-\s*([A-Z][a-z]{2})\s+(\d{1,2}),\s*(\d{4})/);
+ if(!m)return {label:'',date:''};
+ const months={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+ const startYear=(months[m[1]]>months[m[3]])?Number(m[5])-1:Number(m[5]);
+ const d=new Date(startYear,months[m[1]],Number(m[2]),12);
+ const iso=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+ return {label:`${m[1]} ${m[2]} - ${m[3]} ${m[4]}, ${m[5]}`,date:iso};
+}
+function dpWeekNotes(block){
+ const normalized=dpNormalizeTrainingText(block);
+ const progressIndex=normalized.search(/(?:^|\n)\s*WEEKLY\s+PROGRESS\s*(?:\n|$)/i);
+ if(progressIndex<0)return '';
+ const lines=normalized.slice(progressIndex).split('\n').map(x=>x.trim());
+ const labels=['PLANNED MILES','ACTUAL MILES','VARIANCE','COMPLETION'];
+ const positions=labels.map(label=>lines.findIndex(v=>v.toUpperCase().replace(/\s+/g,' ')===label));
+ let start=0;
+ if(positions.every(x=>x>=0)){
+  const lastLabel=Math.max(...positions);
+  start=lastLabel+1+labels.length;
+ }else{
+  const notesIndex=lines.findIndex(v=>/^NOTES$/i.test(v));
+  if(notesIndex>=0)start=notesIndex+1; else return '';
+ }
+ return lines.slice(start)
+  .filter(v=>v && !/^NOTES$/i.test(v) && !/^_+$/.test(v))
+  .join('\n')
+  .trim();
+}
+function journalFromTrainingDoc(text){
+ const activeWeek=currentTrainingWeek();
+ return trainingWeekBlocks(text).filter(({week})=>week<=activeWeek).map(({week,block})=>{
+  const notes=dpWeekNotes(block);
+  if(!notes)return null;
+  const progress=dpProgressNumbers(block);
+  const dates=dpWeekDateInfo(block);
+  const actual=Number.isFinite(progress['ACTUAL MILES'])?progress['ACTUAL MILES']:'';
+  const planned=Number.isFinite(progress['PLANNED MILES'])?progress['PLANNED MILES']:null;
+  const description=planned!=null?(actual!==''?`${actual} actual miles · ${planned} planned`:`${planned} planned miles`):'';
+  return {
+   title:`Week ${week}`,
+   slug:`week-${week}`,
+   date:dates.date,
+   date_label:dates.label,
+   miles:actual,
+   description,
+   body:notes,
+   source:'training-doc'
+  };
+ }).filter(Boolean);
+}
+async function getTrainingPlanText(){
+ const r=await fetch('/api/training-plan?v='+Date.now(),{cache:'no-store'});
+ if(!r.ok)throw new Error('training plan');
+ return r.text();
+}
+async function syncTrainingMileageFromGoogleDoc(training,text=null){
  try{
-  const r=await fetch('/api/training-plan?v='+Date.now(),{cache:'no-store'});
-  if(!r.ok)throw new Error('training plan');
-  const text=await r.text();
+  text=text||await getTrainingPlanText();
   renderRoadTrainingTotals(text);
   const activeWeek=currentTrainingWeek();
   const weeksToUpdate=new Set([1,2,activeWeek,Number(training.week)]);
@@ -1122,11 +1177,20 @@ async function syncTrainingMileageFromGoogleDoc(training){
 }
 async function loadCMS(){
  try{
-  const [journal,training,fund]=await Promise.all([getJSON('/api/journal'),getJSON('/content/training.json'),getJSON('/api/fundraising')]);
+  const [legacyJournal,training,fund,trainingText]=await Promise.all([
+   getJSON('/api/journal').catch(()=>[]),
+   getJSON('/content/training.json'),
+   getJSON('/api/fundraising'),
+   getTrainingPlanText().catch(()=>null)
+  ]);
   const feed=document.getElementById('journal-feed');
+  // Google Doc weekly notes are now the journal source of truth. The old
+  // GitHub Markdown journal remains a fallback if the Doc is unavailable.
+  const docJournal=trainingText?journalFromTrainingDoc(trainingText):[];
+  const journal=docJournal.length?docJournal:legacyJournal;
   const sorted=[...journal].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
   window.__dpJournal=sorted;
-  feed.innerHTML=sorted.map(e=>{const slug=e.slug||slugify(e.title);return `<article class="training-week journal-week cms-journal-entry" data-entry="${esc(slug)}">${e.cover?`<img class="journal-cover" src="${esc(e.cover)}" alt="">`:''}<div class="week-top"><div><span>TRAINING JOURNAL</span><h3>${esc(e.title)}</h3><small>${new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</small></div>${e.miles!==''&&e.miles!=null?`<strong class="week-mileage">${esc(e.miles)} MILES</strong>`:''}</div>${e.description?`<p class="journal-description">${esc(e.description)}</p>`:''}<div class="journal-body collapsed"><p>${simpleMarkdown(e.body)}</p>${e.youtube?`<p><a href="${esc(e.youtube)}" target="_blank" rel="noopener">WATCH THIS CHAPTER ON YOUTUBE ↗</a></p>`:''}</div><div class="journal-actions"><button class="journal-toggle" type="button">READ THE ENTRY →</button><button class="journal-link" type="button" data-copy-entry="${esc(slug)}">SHARE ENTRY →</button></div></article>`}).join('')||'<p>No journal entries yet.</p>';
+  feed.innerHTML=sorted.map(e=>{const slug=e.slug||slugify(e.title);return `<article class="training-week journal-week cms-journal-entry" data-entry="${esc(slug)}">${e.cover?`<img class="journal-cover" src="${esc(e.cover)}" alt="">`:''}<div class="week-top"><div><span>TRAINING JOURNAL</span><h3>${esc(e.title)}</h3><small>${esc(e.date_label||new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}))}</small></div>${e.miles!==''&&e.miles!=null?`<strong class="week-mileage">${esc(e.miles)} MILES</strong>`:''}</div>${e.description?`<p class="journal-description">${esc(e.description)}</p>`:''}<div class="journal-body collapsed"><p>${simpleMarkdown(e.body)}</p>${e.youtube?`<p><a href="${esc(e.youtube)}" target="_blank" rel="noopener">WATCH THIS CHAPTER ON YOUTUBE ↗</a></p>`:''}</div><div class="journal-actions"><button class="journal-toggle" type="button">READ THE ENTRY →</button><button class="journal-link" type="button" data-copy-entry="${esc(slug)}">SHARE ENTRY →</button></div></article>`}).join('')||'<p>No journal entries yet.</p>';
   const totalMiles=sorted.reduce((s,e)=>s+(Number(e.miles)||0),0);
 document.getElementById('planned-week-miles').textContent=training.weekly_miles;
   document.getElementById('planned-week-label').textContent=`Week ${training.week} planned`;
@@ -1136,7 +1200,7 @@ document.getElementById('planned-week-miles').textContent=training.weekly_miles;
   document.getElementById('current-week-mileage').textContent=`${training.weekly_miles} PLANNED MILES`;
   document.getElementById('next-step').textContent=training.next_step;
   document.getElementById('current-schedule').innerHTML=(training.schedule||[]).map(x=>`<div class="schedule-row"><span>${esc(x.day)}</span><strong>${esc(x.run)}</strong><em>${esc(x.strength||'—')}</em><b>${esc(x.status||'Planned')}</b></div>`).join('');
-  await syncTrainingMileageFromGoogleDoc(training);
+  await syncTrainingMileageFromGoogleDoc(training,trainingText);
   document.getElementById('fund-goal').textContent=Number(fund.goal)===50000?'$50K':money(fund.goal);
   document.getElementById('fund-raised').textContent=`${money(fund.amount_raised)} raised`;
   const raised=Number(fund.amount_raised||0),fundedMiles=Math.min(100,Math.floor(raised/500));
