@@ -684,7 +684,7 @@ header .logo,
 <div class="top-progress" aria-label="Distance Pending live progress">
   <div class="top-progress-side">
     <span>MILES RUN</span>
-    <strong id="top-miles-run">79.19</strong>
+    <strong id="top-miles-run">—</strong>
     <small>OF <b id="top-miles-plan">—</b> PLANNED MILES</small>
     <div class="top-progress-track"><i id="top-miles-fill"></i></div>
   </div>
@@ -836,7 +836,7 @@ header .logo,
 
   <div class="since-box road-total-box" id="road-total-box">
   <div class="eyebrow">ROAD TO DAYTONA</div>
-  <h3><span id="road-actual-total">79.19</span> MILES RUN</h3>
+  <h3><span id="road-actual-total">—</span> MILES RUN</h3>
   <p>of <strong id="road-planned-total">—</strong> total planned training miles</p>
   <div class="road-total-track"><div class="road-total-fill" id="road-total-fill"></div></div>
   <div class="road-total-meta"><span id="road-total-percent">CALCULATING PLAN…</span><span>DAYTONA 100 · DEC 2027</span></div>
@@ -984,17 +984,14 @@ async function getJSON(path){
  }
  throw lastError||new Error(path);
 }
-const TRAINING_PLAN_START = new Date('2026-10-05T12:00:00');
+// Week rollover uses Florida calendar dates, not elapsed milliseconds.
+const TRAINING_PLAN_START = '2026-10-05';
 function currentTrainingWeek(){
- const now=new Date();
- const days=Math.floor((now-TRAINING_PLAN_START)/86400000);
- return Math.max(1,Math.floor(days/7)+1);
-}
-function trainingWeekBlock(text,week){
- const normalized=String(text||'').replace(/\r/g,'').replace(/\u00a0/g,' ');
- const re=new RegExp(`(?:^|\\n)\\s*WEEK\\s+${week}\\b([\\s\\S]*?)(?=\\n\\s*WEEK\\s+${week+1}\\b|$)`,'i');
- const match=normalized.match(re);
- return match?match[0]:'';
+ const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+ const value=k=>Number(parts.find(x=>x.type===k).value);
+ const today=Date.UTC(value('year'),value('month')-1,value('day'));
+ const start=Date.UTC(2026,9,5);
+ return Math.max(1,Math.floor((today-start)/604800000)+1);
 }
 function dpNormalizeTrainingText(text){
  return String(text||'')
@@ -1190,7 +1187,7 @@ async function syncTrainingMileageFromGoogleDoc(training,text=null){
  try{
   text=text||await getTrainingPlanText();
   renderRoadTrainingTotals(text);
-  const activeWeek=Number(training.week)||currentTrainingWeek();
+  const activeWeek=currentTrainingWeek();
   // Snapshot cards always roll with the plan: the two weeks immediately before
   // the current week, followed by current-week planned mileage and longest run.
   [activeWeek-2,activeWeek-1].forEach((week,index)=>{
@@ -1218,9 +1215,9 @@ async function loadCMS(){
  try{
   const [legacyJournal,training,fund,trainingText]=await Promise.all([
    getJSON('/api/journal').catch(()=>[]),
-   getJSON('/content/training.json'),
-   getJSON('/api/fundraising'),
-   getTrainingPlanText().catch(()=>null)
+   getJSON('/content/training.json').catch(()=>({})),
+   getJSON('/api/fundraising').catch(()=>null),
+   getTrainingPlanText().catch(err=>{console.warn('Training Doc unavailable',err);return null;})
   ]);
   const feed=document.getElementById('journal-feed');
   // Google Doc weekly notes are now the journal source of truth. The old
@@ -1232,8 +1229,8 @@ async function loadCMS(){
   feed.innerHTML=sorted.map(e=>{const slug=e.slug||slugify(e.title);return `<article class="training-week journal-week cms-journal-entry" data-entry="${esc(slug)}">${e.cover?`<img class="journal-cover" src="${esc(e.cover)}" alt="">`:''}<div class="week-top"><div><span>TRAINING JOURNAL</span><h3>${esc(e.title)}</h3><small>${esc(e.date_label||new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}))}</small></div>${e.miles!==''&&e.miles!=null?`<strong class="week-mileage">${esc(e.miles)} MILES</strong>`:''}</div>${e.description?`<p class="journal-description">${esc(e.description)}</p>`:''}<div class="journal-body collapsed"><p>${simpleMarkdown(e.body)}</p>${e.youtube?`<p><a href="${esc(e.youtube)}" target="_blank" rel="noopener">WATCH THIS CHAPTER ON YOUTUBE ↗</a></p>`:''}</div><div class="journal-actions"><button class="journal-toggle" type="button">READ THE ENTRY →</button><button class="journal-link" type="button" data-copy-entry="${esc(slug)}">SHARE ENTRY →</button></div></article>`}).join('')||'<p>No journal entries yet.</p>';
   const totalMiles=sorted.reduce((s,e)=>s+(Number(e.miles)||0),0);
 // Current-week card is driven by the Google Doc too, so its week/date/schedule cannot drift behind.
-  let displayWeek=Number(training.week), displayMiles=training.weekly_miles, displayDates=training.dates;
-  let displaySchedule=training.schedule||[], displayLongest=training.longest_run;
+  let displayWeek=currentTrainingWeek(), displayMiles=training.weekly_miles??'—', displayDates=training.dates??'—';
+  let displaySchedule=training.schedule||[], displayLongest=training.longest_run??'—';
   if(trainingText){
    const activeWeek=currentTrainingWeek();
    const activeBlock=trainingWeekBlock(trainingText,activeWeek);
@@ -1260,6 +1257,7 @@ async function loadCMS(){
   document.getElementById('next-step').textContent=`Next up: ${displayMiles} planned miles.`;
   document.getElementById('current-schedule').innerHTML=displaySchedule.map(x=>`<div class="schedule-row"><span>${esc(x.day)}</span><strong>${esc(x.run)}</strong><em>${esc(x.strength||'—')}</em><b>${esc(x.status||'Planned')}</b></div>`).join('');
   await syncTrainingMileageFromGoogleDoc({...training,week:displayWeek},trainingText);
+  if(fund){
   document.getElementById('fund-goal').textContent=Number(fund.goal)===50000?'$50K':money(fund.goal);
   document.getElementById('fund-raised').textContent=`${money(fund.amount_raised)} raised`;
   const raised=Number(fund.amount_raised||0),fundedMiles=Math.min(100,Math.floor(raised/500));
@@ -1276,6 +1274,7 @@ async function loadCMS(){
 
 
   document.querySelectorAll('a[href*="pages.lls.org"]').forEach(a=>{if(fund.fundraiser_url)a.href=fund.fundraiser_url});
+  }
  }catch(err){
   const feed=document.getElementById('journal-feed'); if(feed) feed.innerHTML='<p class="cms-loading">Journal is temporarily unavailable. The mission and site are still here.</p>';
  }
